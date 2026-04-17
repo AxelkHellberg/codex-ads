@@ -1,0 +1,300 @@
+{
+  "upstream_repo": "https://github.com/AgriciDaniel/claude-ads",
+  "upstream_version": "1.5.1",
+  "head_sha": "402ba63b9af56c0573766fb0ae8d7b56dc13a674",
+  "commands": [
+    "apple",
+    "audit",
+    "budget",
+    "competitor",
+    "creative",
+    "google",
+    "landing",
+    "linkedin",
+    "math",
+    "meta",
+    "microsoft",
+    "plan <business-type>",
+    "plan <type>",
+    "report",
+    "test",
+    "tiktok",
+    "youtube"
+  ],
+  "skills": [
+    {
+      "directory": "ads-apple",
+      "description": "Apple Ads (formerly Apple Search Ads) deep analysis for mobile app advertisers. Evaluates campaign structure, bid health, Custom Product Pages (CPPs), MMP attribution, budget pacing, TAP coverage (Today/Search/Product Pages), Maximize Conversions bidding, and goal CPA benchmarks by country. Use when user says Apple Ads, Apple Search Ads, ASA, App Store ads, Apple ads, Search Ads, or is advertising a mobile app on iOS."
+    },
+    {
+      "directory": "ads-audit",
+      "description": "Full multi-platform paid advertising audit with parallel subagent delegation. Analyzes Google Ads, Meta Ads, LinkedIn Ads, TikTok Ads, and Microsoft Ads accounts. Generates health score per platform and aggregate score. Use when user says audit, full ad check, analyze my ads, account health check, or PPC audit."
+    },
+    {
+      "directory": "ads-budget",
+      "description": "Budget allocation and bidding strategy review across all ad platforms. Evaluates spend distribution, bidding strategy appropriateness, scaling readiness, and identifies campaigns to kill or scale. Uses 70/20/10 rule, 3x Kill Rule, and 20% scaling rule. Use when user says budget allocation, bidding strategy, ad spend, ROAS target, media budget, or scaling."
+    },
+    {
+      "directory": "ads-competitor",
+      "description": "Competitor ad intelligence analysis across Google, Meta, LinkedIn, TikTok, Microsoft, and Apple Ads. Analyzes competitor ad copy, creative strategy, keyword targeting, estimated spend, and identifies competitive gaps and opportunities. Use when user says competitor ads, ad spy, competitive analysis, competitor PPC, or ad intelligence."
+    },
+    {
+      "directory": "ads-create",
+      "description": "Campaign concept and copy brief generator for paid advertising. Reads brand-profile.json and optional audit results to produce structured campaign concepts, messaging pillars, and copy briefs. Outputs campaign-brief.md to the current directory. Run after /ads dna and before /ads generate. Triggers on: create campaign, campaign brief, ad concepts, write ad copy, campaign strategy, ad messaging, creative brief, generate concepts."
+    },
+    {
+      "directory": "ads-creative",
+      "description": "Cross-platform creative quality audit covering ad copy, video, image, and format diversity across all platforms. Detects creative fatigue, evaluates platform-native compliance, and provides production priorities. Use when user says creative audit, ad creative, creative fatigue, ad copy, ad design, or creative review."
+    },
+    {
+      "directory": "ads-dna",
+      "description": "Brand DNA extractor for paid advertising. Scans a website URL to extract visual identity, tone of voice, color palette, typography, and imagery style. Outputs brand-profile.json to the current directory. Run before /ads create or /ads generate for brand-consistent creative. Triggers on: brand DNA, brand profile, extract brand, brand identity, brand colors, what is the brand voice, analyze brand, brand style guide."
+    },
+    {
+      "directory": "ads-generate",
+      "description": "AI image generation for paid ad creatives. Reads campaign-brief.md and brand-profile.json to produce platform-sized ad images using banana-claude. Requires banana-claude (v1.4.1+) with nanobanana-mcp configured. Triggers on: generate ads, create images, make ad creatives, generate visuals, create ad images, generate campaign images, make the images, generate from brief."
+    },
+    {
+      "directory": "ads-google",
+      "description": "Google Ads deep analysis covering Search, Performance Max, Display, YouTube, and Demand Gen campaigns. Evaluates 80 checks across conversion tracking, wasted spend, account structure, keywords, ads, and settings. Use when user says Google Ads, Google PPC, search ads, PMax, Performance Max, or Google campaign."
+    },
+    {
+      "directory": "ads-landing",
+      "description": "Landing page quality assessment for paid advertising campaigns. Evaluates message match, page speed, mobile experience, trust signals, form optimization, and conversion rate potential. Use when user says landing page, post-click experience, landing page audit, conversion rate, or landing page optimization."
+    },
+    {
+      "directory": "ads-linkedin",
+      "description": "LinkedIn Ads deep analysis for B2B advertising. Evaluates 27 checks across technical setup, audience targeting, creative quality, lead gen forms, and bidding strategy. Includes Thought Leader Ads, ABM, and predictive audiences. Use when user says LinkedIn Ads, B2B ads, sponsored content, lead gen forms, InMail, or LinkedIn campaign."
+    },
+    {
+      "directory": "ads-math",
+      "description": "PPC financial calculator and modeling tool. CPA, ROAS, CPL calculations, break-even analysis, impression share opportunity sizing, budget forecasting, LTV:CAC ratio analysis, and MER (Marketing Efficiency Ratio) assessment. Requires zero API access. Works with pasted data from exports. Use when user says PPC math, ad calculator, break-even, budget forecast, ROAS calculator, CPA calculator, impression share, LTV CAC, or MER."
+    },
+    {
+      "directory": "ads-meta",
+      "description": "Meta Ads deep analysis covering Facebook and Instagram advertising. Evaluates 50 checks across Pixel/CAPI health, creative diversity and fatigue, account structure, and audience targeting. Includes Advantage+ assessment. Use when user says Meta Ads, Facebook Ads, Instagram Ads, Advantage+, or Meta campaign."
+    },
+    {
+      "directory": "ads-microsoft",
+      "description": "Microsoft/Bing Ads deep analysis covering search, Performance Max, Audience Network, and Copilot integration. Evaluates 24 checks with focus on Google import validation, unique Microsoft features, and cost advantage assessment. Use when user says Microsoft Ads, Bing Ads, Bing PPC, Copilot ads, or Microsoft campaign."
+    },
+    {
+      "directory": "ads-photoshoot",
+      "description": "Product photography enhancement for ad creatives using banana-claude image generation. Takes a product image and generates 5 professional photography styles for ad use: Studio, Floating, Ingredient, In Use, and Lifestyle. Requires banana-claude (v1.4.1+) with nanobanana-mcp. Triggers on: product photo, product photography, photoshoot, enhance product image, product shoot, product photos for ads, generate product photos, studio shot, lifestyle photo."
+    },
+    {
+      "directory": "ads-plan",
+      "description": "Strategic paid advertising planning with industry-specific templates. Covers platform selection, campaign architecture, budget planning, creative strategy, and phased implementation roadmap. Use when user says ad plan, ad strategy, campaign planning, media plan, PPC strategy, or advertising plan."
+    },
+    {
+      "directory": "ads-test",
+      "description": "A/B test design and experiment planning for paid advertising. Structured hypothesis framework, statistical significance calculator, test duration estimator, sample size calculator, and platform-specific experiment setup guides (Meta Experiments, Google Experiments, LinkedIn A/B). Use when user says A/B test, split test, experiment design, test hypothesis, statistical significance, sample size, or test duration."
+    },
+    {
+      "directory": "ads-tiktok",
+      "description": "TikTok Ads deep analysis covering creative quality, tracking, bidding, campaign structure, and TikTok Shop. Evaluates 28 checks with emphasis on creative-first strategy, safe zone compliance, and Smart+ campaigns. Use when user says TikTok Ads, TikTok marketing, TikTok Shop, Spark Ads, Smart+, or TikTok campaign."
+    },
+    {
+      "directory": "ads-youtube",
+      "description": "YouTube Ads specific analysis covering campaign types, creative quality, audience targeting, and measurement. Evaluates video ad performance across skippable, non-skippable, bumper, Shorts, Demand Gen, and Connected TV formats. Covers VAC\u2192Demand Gen migration, Shorts creative requirements, and CTV shoppable ads. Use when user says YouTube Ads, video ads, pre-roll, bumper ads, YouTube campaign, Shorts ads, or CTV ads."
+    }
+  ],
+  "agents": [
+    "audit-budget.md",
+    "audit-compliance.md",
+    "audit-creative.md",
+    "audit-google.md",
+    "audit-meta.md",
+    "audit-tracking.md",
+    "copy-writer.md",
+    "creative-strategist.md",
+    "format-adapter.md",
+    "visual-designer.md"
+  ],
+  "scripts": [
+    "analyze_landing.py",
+    "capture_screenshot.py",
+    "fetch_page.py",
+    "generate_image.py",
+    "generate_report.py",
+    "url_utils.py"
+  ],
+  "changed_files": [
+    "A\t.claude-plugin/marketplace.json",
+    "A\t.claude-plugin/plugin.json",
+    "A\t.gitattributes",
+    "A\t.github/ISSUE_TEMPLATE/bug_report.yml",
+    "A\t.github/ISSUE_TEMPLATE/config.yml",
+    "A\t.github/ISSUE_TEMPLATE/feature_request.yml",
+    "A\t.github/PULL_REQUEST_TEMPLATE.md",
+    "A\t.github/dependabot.yml",
+    "A\t.github/release.yml",
+    "A\t.github/workflows/ci.yml",
+    "A\t.github/workflows/dependabot-automerge.yml",
+    "A\t.gitignore",
+    "A\tCHANGELOG.md",
+    "A\tCITATION.cff",
+    "A\tCLAUDE.md",
+    "A\tCODE_OF_CONDUCT.md",
+    "A\tCONTRIBUTING.md",
+    "A\tLICENSE",
+    "A\tREADME.md",
+    "A\tSECURITY.md",
+    "A\tSUPPORT.md",
+    "A\tads/SKILL.md",
+    "A\tads/references/additional-platforms.md",
+    "A\tads/references/benchmarks.md",
+    "A\tads/references/bidding-strategies.md",
+    "A\tads/references/brand-dna-template.md",
+    "A\tads/references/budget-allocation.md",
+    "A\tads/references/compliance.md",
+    "A\tads/references/conversion-tracking.md",
+    "A\tads/references/copy-frameworks.md",
+    "A\tads/references/gaql-notes.md",
+    "A\tads/references/google-audit.md",
+    "A\tads/references/google-creative-specs.md",
+    "A\tads/references/image-providers.md",
+    "A\tads/references/linkedin-audit.md",
+    "A\tads/references/linkedin-creative-specs.md",
+    "A\tads/references/mcp-integration.md",
+    "A\tads/references/meta-audit.md",
+    "A\tads/references/meta-creative-specs.md",
+    "A\tads/references/microsoft-audit.md",
+    "A\tads/references/microsoft-creative-specs.md",
+    "A\tads/references/platform-specs.md",
+    "A\tads/references/scoring-system.md",
+    "A\tads/references/tiktok-audit.md",
+    "A\tads/references/tiktok-creative-specs.md",
+    "A\tads/references/voice-to-style.md",
+    "A\tads/references/youtube-creative-specs.md",
+    "A\tads/research-sources/README.md",
+    "A\tads/research-sources/claude-research.md",
+    "A\tads/research-sources/gemini-research.md",
+    "A\tads/research-sources/google-audit-checklists.md",
+    "A\tads/research-sources/google-optimization-logic.md",
+    "A\tads/research-sources/google-platform-specs.md",
+    "A\tagents/audit-budget.md",
+    "A\tagents/audit-compliance.md",
+    "A\tagents/audit-creative.md",
+    "A\tagents/audit-google.md",
+    "A\tagents/audit-meta.md",
+    "A\tagents/audit-tracking.md",
+    "A\tagents/copy-writer.md",
+    "A\tagents/creative-strategist.md",
+    "A\tagents/format-adapter.md",
+    "A\tagents/visual-designer.md",
+    "A\tassets/banner.png",
+    "A\tassets/demo.gif",
+    "A\tassets/diagrams/01-architecture.svg",
+    "A\tassets/diagrams/02-parallel-audit.svg",
+    "A\tassets/diagrams/04-platform-checks.svg",
+    "A\tassets/diagrams/05-quality-gates.svg",
+    "A\tassets/diagrams/06-how-it-works.svg",
+    "A\tassets/diagrams/07-data-flow.svg",
+    "A\tassets/diagrams/08-industry-templates.svg",
+    "A\tassets/diagrams/10-mcp-integration.svg",
+    "A\tassets/diagrams/12-privacy-flow.svg",
+    "A\tassets/diagrams/13-scoring-algorithm.svg",
+    "A\tassets/diagrams/14-creative-pipeline.svg",
+    "A\tassets/diagrams/15-platform-grid.svg",
+    "A\tassets/diagrams/16-pdf-pipeline.svg",
+    "A\tassets/diagrams/17-ab-testing.svg",
+    "A\tassets/diagrams/18-ppc-calculators.svg",
+    "A\tassets/diagrams/19-audit-lifecycle.svg",
+    "A\tassets/diagrams/20-install-methods.svg",
+    "A\tevals/creative-evals.json",
+    "A\tinstall.ps1",
+    "A\tinstall.sh",
+    "A\trequirements.txt",
+    "A\tresearch/Ad Audit Checklist & Scoring System.md",
+    "A\tresearch/Ad Optimization Tool Logic Request.md",
+    "A\tresearch/Paid Ad Technical Specifications Request.md",
+    "A\tresearch/Paid Advertising Research for Claude-Ads.md",
+    "A\tresearch/The Definitive Paid Advertising Reference for 2026_ Benchmarks, Audits, and Platform Strategy.md",
+    "A\tscripts/analyze_landing.py",
+    "A\tscripts/capture_screenshot.py",
+    "A\tscripts/fetch_page.py",
+    "A\tscripts/generate_image.py",
+    "A\tscripts/generate_report.py",
+    "A\tscripts/url_utils.py",
+    "A\tskills/ads-apple/SKILL.md",
+    "A\tskills/ads-audit/SKILL.md",
+    "A\tskills/ads-budget/SKILL.md",
+    "A\tskills/ads-competitor/SKILL.md",
+    "A\tskills/ads-create/SKILL.md",
+    "A\tskills/ads-creative/SKILL.md",
+    "A\tskills/ads-dna/SKILL.md",
+    "A\tskills/ads-generate/SKILL.md",
+    "A\tskills/ads-google/SKILL.md",
+    "A\tskills/ads-landing/SKILL.md",
+    "A\tskills/ads-linkedin/SKILL.md",
+    "A\tskills/ads-math/SKILL.md",
+    "A\tskills/ads-meta/SKILL.md",
+    "A\tskills/ads-microsoft/SKILL.md",
+    "A\tskills/ads-photoshoot/SKILL.md",
+    "A\tskills/ads-plan/SKILL.md",
+    "A\tskills/ads-plan/assets/agency.md",
+    "A\tskills/ads-plan/assets/b2b-enterprise.md",
+    "A\tskills/ads-plan/assets/ecommerce-creative.md",
+    "A\tskills/ads-plan/assets/ecommerce.md",
+    "A\tskills/ads-plan/assets/finance.md",
+    "A\tskills/ads-plan/assets/generic.md",
+    "A\tskills/ads-plan/assets/healthcare.md",
+    "A\tskills/ads-plan/assets/info-products.md",
+    "A\tskills/ads-plan/assets/local-service.md",
+    "A\tskills/ads-plan/assets/mobile-app.md",
+    "A\tskills/ads-plan/assets/real-estate.md",
+    "A\tskills/ads-plan/assets/saas.md",
+    "A\tskills/ads-test/SKILL.md",
+    "A\tskills/ads-tiktok/SKILL.md",
+    "A\tskills/ads-youtube/SKILL.md",
+    "A\tuninstall.ps1",
+    "A\tuninstall.sh"
+  ],
+  "recent_commits": [
+    "402ba63 fix(v1.5.1): security hardening - SSRF protection, CI/CD hardening, error sanitization",
+    "703bd2f feat: add community CTA footer to skill orchestrator",
+    "d9a8063 feat(v1.5.0): 250+ audit checks, 3 new skills, PDF reports, 17 SVG diagrams, security hardening",
+    "1cf749f Add author section, community links, and backlinks",
+    "3a15868 ci: auto-approve and squash-merge Dependabot PRs",
+    "87afa94 fix(docs): correct audit check count to 225+ in README and CITATION.cff",
+    "c2ca51f feat(v1.4.0): banana integration, creative pipeline overhaul, ecom templates",
+    "0d770d8 refactor: remove all em/en dashes, trim description, add user-invokable",
+    "ae7c895 Add blog link to agricidaniel.com",
+    "16f8c95 fix(docs): correct stale counts in README, CLAUDE.md, install.ps1",
+    "49f23cd feat(v1.3.0): GAQL accuracy fixes, validation gates, marketplace support",
+    "bf77f61 Merge pull request #10 from AgriciDaniel/dependabot/pip/pillow-gte-11.0.0-and-lt-13.0.0"
+  ],
+  "mapping_rules": [
+    {
+      "source": "README.md",
+      "target": "sync/generated/upstream-sync-report.md",
+      "transform": "readme_command_inventory"
+    },
+    {
+      "source": "ads/SKILL.md",
+      "target": "skills/ads/SKILL.md",
+      "transform": "command_surface_reference"
+    },
+    {
+      "source": "skills/*/SKILL.md",
+      "target": "sync/generated/upstream-inventory.json",
+      "transform": "skill_inventory"
+    },
+    {
+      "source": "agents/*.md",
+      "target": "sync/generated/upstream-inventory.json",
+      "transform": "agent_inventory"
+    },
+    {
+      "source": "scripts/*.py",
+      "target": "sync/generated/upstream-inventory.json",
+      "transform": "script_inventory"
+    },
+    {
+      "source": ".claude-plugin/plugin.json",
+      "target": "sync/generated/upstream-inventory.json",
+      "transform": "plugin_metadata"
+    }
+  ]
+}

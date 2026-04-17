@@ -1,0 +1,163 @@
+# Upstream Sync Report
+
+- Upstream repo: `https://github.com/AgriciDaniel/claude-ads`
+- Head SHA: `402ba63b9af56c0573766fb0ae8d7b56dc13a674`
+- Version: `1.5.1`
+
+## Recent commits
+
+- `402ba63 fix(v1.5.1): security hardening - SSRF protection, CI/CD hardening, error sanitization`
+- `703bd2f feat: add community CTA footer to skill orchestrator`
+- `d9a8063 feat(v1.5.0): 250+ audit checks, 3 new skills, PDF reports, 17 SVG diagrams, security hardening`
+- `1cf749f Add author section, community links, and backlinks`
+- `3a15868 ci: auto-approve and squash-merge Dependabot PRs`
+- `87afa94 fix(docs): correct audit check count to 225+ in README and CITATION.cff`
+- `c2ca51f feat(v1.4.0): banana integration, creative pipeline overhaul, ecom templates`
+- `0d770d8 refactor: remove all em/en dashes, trim description, add user-invokable`
+- `ae7c895 Add blog link to agricidaniel.com`
+- `16f8c95 fix(docs): correct stale counts in README, CLAUDE.md, install.ps1`
+- `49f23cd feat(v1.3.0): GAQL accuracy fixes, validation gates, marketplace support`
+- `bf77f61 Merge pull request #10 from AgriciDaniel/dependabot/pip/pillow-gte-11.0.0-and-lt-13.0.0`
+
+## Changed files
+
+- `A	.claude-plugin/marketplace.json`
+- `A	.claude-plugin/plugin.json`
+- `A	.gitattributes`
+- `A	.github/ISSUE_TEMPLATE/bug_report.yml`
+- `A	.github/ISSUE_TEMPLATE/config.yml`
+- `A	.github/ISSUE_TEMPLATE/feature_request.yml`
+- `A	.github/PULL_REQUEST_TEMPLATE.md`
+- `A	.github/dependabot.yml`
+- `A	.github/release.yml`
+- `A	.github/workflows/ci.yml`
+- `A	.github/workflows/dependabot-automerge.yml`
+- `A	.gitignore`
+- `A	CHANGELOG.md`
+- `A	CITATION.cff`
+- `A	CLAUDE.md`
+- `A	CODE_OF_CONDUCT.md`
+- `A	CONTRIBUTING.md`
+- `A	LICENSE`
+- `A	README.md`
+- `A	SECURITY.md`
+- `A	SUPPORT.md`
+- `A	ads/SKILL.md`
+- `A	ads/references/additional-platforms.md`
+- `A	ads/references/benchmarks.md`
+- `A	ads/references/bidding-strategies.md`
+- `A	ads/references/brand-dna-template.md`
+- `A	ads/references/budget-allocation.md`
+- `A	ads/references/compliance.md`
+- `A	ads/references/conversion-tracking.md`
+- `A	ads/references/copy-frameworks.md`
+- `A	ads/references/gaql-notes.md`
+- `A	ads/references/google-audit.md`
+- `A	ads/references/google-creative-specs.md`
+- `A	ads/references/image-providers.md`
+- `A	ads/references/linkedin-audit.md`
+- `A	ads/references/linkedin-creative-specs.md`
+- `A	ads/references/mcp-integration.md`
+- `A	ads/references/meta-audit.md`
+- `A	ads/references/meta-creative-specs.md`
+- `A	ads/references/microsoft-audit.md`
+- `A	ads/references/microsoft-creative-specs.md`
+- `A	ads/references/platform-specs.md`
+- `A	ads/references/scoring-system.md`
+- `A	ads/references/tiktok-audit.md`
+- `A	ads/references/tiktok-creative-specs.md`
+- `A	ads/references/voice-to-style.md`
+- `A	ads/references/youtube-creative-specs.md`
+- `A	ads/research-sources/README.md`
+- `A	ads/research-sources/claude-research.md`
+- `A	ads/research-sources/gemini-research.md`
+- `A	ads/research-sources/google-audit-checklists.md`
+- `A	ads/research-sources/google-optimization-logic.md`
+- `A	ads/research-sources/google-platform-specs.md`
+- `A	agents/audit-budget.md`
+- `A	agents/audit-compliance.md`
+- `A	agents/audit-creative.md`
+- `A	agents/audit-google.md`
+- `A	agents/audit-meta.md`
+- `A	agents/audit-tracking.md`
+- `A	agents/copy-writer.md`
+- `A	agents/creative-strategist.md`
+- `A	agents/format-adapter.md`
+- `A	agents/visual-designer.md`
+- `A	assets/banner.png`
+- `A	assets/demo.gif`
+- `A	assets/diagrams/01-architecture.svg`
+- `A	assets/diagrams/02-parallel-audit.svg`
+- `A	assets/diagrams/04-platform-checks.svg`
+- `A	assets/diagrams/05-quality-gates.svg`
+- `A	assets/diagrams/06-how-it-works.svg`
+- `A	assets/diagrams/07-data-flow.svg`
+- `A	assets/diagrams/08-industry-templates.svg`
+- `A	assets/diagrams/10-mcp-integration.svg`
+- `A	assets/diagrams/12-privacy-flow.svg`
+- `A	assets/diagrams/13-scoring-algorithm.svg`
+- `A	assets/diagrams/14-creative-pipeline.svg`
+- `A	assets/diagrams/15-platform-grid.svg`
+- `A	assets/diagrams/16-pdf-pipeline.svg`
+- `A	assets/diagrams/17-ab-testing.svg`
+- `A	assets/diagrams/18-ppc-calculators.svg`
+- `A	assets/diagrams/19-audit-lifecycle.svg`
+- `A	assets/diagrams/20-install-methods.svg`
+- `A	evals/creative-evals.json`
+- `A	install.ps1`
+- `A	install.sh`
+- `A	requirements.txt`
+- `A	research/Ad Audit Checklist & Scoring System.md`
+- `A	research/Ad Optimization Tool Logic Request.md`
+- `A	research/Paid Ad Technical Specifications Request.md`
+- `A	research/Paid Advertising Research for Claude-Ads.md`
+- `A	research/The Definitive Paid Advertising Reference for 2026_ Benchmarks, Audits, and Platform Strategy.md`
+- `A	scripts/analyze_landing.py`
+- `A	scripts/capture_screenshot.py`
+- `A	scripts/fetch_page.py`
+- `A	scripts/generate_image.py`
+- `A	scripts/generate_report.py`
+- `A	scripts/url_utils.py`
+- `A	skills/ads-apple/SKILL.md`
+- `A	skills/ads-audit/SKILL.md`
+- `A	skills/ads-budget/SKILL.md`
+- `A	skills/ads-competitor/SKILL.md`
+- `A	skills/ads-create/SKILL.md`
+- `A	skills/ads-creative/SKILL.md`
+- `A	skills/ads-dna/SKILL.md`
+- `A	skills/ads-generate/SKILL.md`
+- `A	skills/ads-google/SKILL.md`
+- `A	skills/ads-landing/SKILL.md`
+- `A	skills/ads-linkedin/SKILL.md`
+- `A	skills/ads-math/SKILL.md`
+- `A	skills/ads-meta/SKILL.md`
+- `A	skills/ads-microsoft/SKILL.md`
+- `A	skills/ads-photoshoot/SKILL.md`
+- `A	skills/ads-plan/SKILL.md`
+- `A	skills/ads-plan/assets/agency.md`
+- `A	skills/ads-plan/assets/b2b-enterprise.md`
+- `A	skills/ads-plan/assets/ecommerce-creative.md`
+- `A	skills/ads-plan/assets/ecommerce.md`
+- `A	skills/ads-plan/assets/finance.md`
+- `A	skills/ads-plan/assets/generic.md`
+- `A	skills/ads-plan/assets/healthcare.md`
+
+## Command inventory
+
+- `apple`
+- `audit`
+- `budget`
+- `competitor`
+- `creative`
+- `google`
+- `landing`
+- `linkedin`
+- `math`
+- `meta`
+- `microsoft`
+- `plan <business-type>`
+- `plan <type>`
+- `report`
+- `test`
+- `tiktok`
+- `youtube`

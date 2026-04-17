@@ -1,0 +1,34 @@
+{
+  "rules": [
+    {
+      "source": "README.md",
+      "target": "sync/generated/upstream-sync-report.md",
+      "transform": "readme_command_inventory"
+    },
+    {
+      "source": "ads/SKILL.md",
+      "target": "skills/ads/SKILL.md",
+      "transform": "command_surface_reference"
+    },
+    {
+      "source": "skills/*/SKILL.md",
+      "target": "sync/generated/upstream-inventory.json",
+      "transform": "skill_inventory"
+    },
+    {
+      "source": "agents/*.md",
+      "target": "sync/generated/upstream-inventory.json",
+      "transform": "agent_inventory"
+    },
+    {
+      "source": "scripts/*.py",
+      "target": "sync/generated/upstream-inventory.json",
+      "transform": "script_inventory"
+    },
+    {
+      "source": ".claude-plugin/plugin.json",
+      "target": "sync/generated/upstream-inventory.json",
+      "transform": "plugin_metadata"
+    }
+  ]
+}

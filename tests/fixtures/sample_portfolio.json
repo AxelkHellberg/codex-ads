@@ -1,0 +1,39 @@
+{
+  "business_type": "saas",
+  "goal": "pipeline",
+  "monthly_budget": 25000,
+  "platforms": {
+    "google": {
+      "budget": 12000,
+      "metrics": {
+        "conversion_tracking_enabled": true,
+        "enhanced_conversions_enabled": false,
+        "wasted_spend_pct": 0.18,
+        "brand_nonbrand_split": false,
+        "broad_match_manual_cpc": true,
+        "search_term_review_days": 19
+      }
+    },
+    "meta": {
+      "budget": 8000,
+      "metrics": {
+        "pixel_or_capi_live": true,
+        "emq_score": 5.9,
+        "distinct_creatives": 5,
+        "fatigue_index": 0.62,
+        "learning_limited_pct": 0.37,
+        "audience_overlap_pct": 0.3
+      }
+    },
+    "linkedin": {
+      "budget": 5000,
+      "metrics": {
+        "insight_tag_live": true,
+        "audience_size": 42000,
+        "form_completion_rate": 0.08,
+        "creative_angles": 2,
+        "campaigns_under_min_budget_pct": 0.45
+      }
+    }
+  }
+}

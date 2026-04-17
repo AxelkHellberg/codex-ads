@@ -1,0 +1,8 @@
+{
+  "upstream_repo": "https://github.com/AgriciDaniel/claude-ads.git",
+  "tracked_branch": "main",
+  "last_checked_sha": "402ba63b9af56c0573766fb0ae8d7b56dc13a674",
+  "last_synced_sha": "402ba63b9af56c0573766fb0ae8d7b56dc13a674",
+  "last_run_at": "2026-04-17T13:06:40.692038+00:00",
+  "last_result": "success"
+}

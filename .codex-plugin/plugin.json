@@ -1,0 +1,44 @@
+{
+  "name": "codex-ads",
+  "version": "0.1.0",
+  "description": "Codex-native paid advertising audits, planning, reporting, and creative production with daily upstream compatibility sync.",
+  "author": {
+    "name": "Axel Hellberg",
+    "url": "https://github.com/AxelkHellberg"
+  },
+  "homepage": "https://github.com/AxelkHellberg/codex-ads",
+  "repository": "https://github.com/AxelkHellberg/codex-ads",
+  "license": "MIT",
+  "keywords": [
+    "paid-media",
+    "google-ads",
+    "meta-ads",
+    "tiktok-ads",
+    "linkedin-ads",
+    "microsoft-ads",
+    "apple-search-ads",
+    "codex-plugin"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Codex Ads",
+    "shortDescription": "Audit, plan, and package paid media work inside Codex.",
+    "longDescription": "Codex Ads gives Codex a structured paid-media workflow for audits, budget reviews, reporting, brand DNA extraction, creative briefs, asset prompting, and daily compatibility sync from an upstream reference repository.",
+    "developerName": "Axel Hellberg",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Automation"
+    ],
+    "websiteURL": "https://github.com/AxelkHellberg/codex-ads",
+    "defaultPrompt": [
+      "Run /ads audit on this account export and write the action plan.",
+      "Extract brand DNA from this site and generate a campaign brief.",
+      "Check for upstream changes and sync Codex Ads."
+    ],
+    "brandColor": "#0B6E4F",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/logo.svg"
+  }
+}
