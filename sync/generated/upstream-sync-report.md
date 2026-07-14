@@ -1,132 +1,163 @@
 # Upstream Sync Report
 
-- Upstream repo: `https://github.com/AI-Marketing-Hub/claude-ads`
-- Head SHA: `283d9d4917cb7c4f2ce9181e125bb1970f74ab04`
-- Version: `1.7.0`
+- Upstream repo: `https://github.com/AgriciDaniel/claude-ads`
+- Head SHA: `669c7608ecb50dd95c941a71fa3ca0a1c0e40512`
+- Version: `2.0.1`
 
 ## Recent commits
 
-- `283d9d4 docs(readme): repo-agnostic phrasing so README reads coherently on both mirrors`
-- `7de67ed docs(mcp): add explicit credential-safety guidance + security callout`
-- `bd118d8 chore: repo + CI + uninstall hygiene`
-- `eb89d6f sec(scripts): close SSRF redirect bypass + broaden credential redaction`
-- `2c167c5 docs(readme): add Star history section before License`
-- `3119bef docs(readme): merge Demo + Sample output into one above-the-fold section`
-- `1d0a7f7 docs(readme): add AI-Marketing-Hub GitHub org badge`
-- `5cf1e54 fix(banner): bump status-bar version V1.7.0 -> V1.7.1`
-- `613e2ea chore(pre-public): orphan SVG removal + version refs + WIP gitignore`
-- `14e712c docs(readme): generalize community-mirror description + drop shields.io footnote`
-- `d19d56d release(v1.7.1): document the post-v1.7.0 polish wave + refined banner SVG`
-- `a34e932 feat(branding): lock 5 final diagrams from A/B/C variant exploration`
+- `669c760 release: v2.0.1 - public mirror release`
+- `7a8810f release: v2.0.0 - 12-platform paid-media operating skill`
+- `8c335ba docs(readme): fix ragged platforms table and reframe privacy section`
+- `50db0e7 fix(assets): restore intended animated cover and diagrams`
+- `64d57d3 chore: remove stale gitignore rules for deleted diagram variants`
+- `0b8566e docs: harden repository presentation and provenance`
+- `50eda33 fix: enforce Windows output sharing guard`
+- `72e4bee fix: close native Windows portability gaps`
+- `abeed0c fix: close installer ownership and image privacy gaps`
+- `7aaf8e2 fix(ci): clear expected PowerShell failure status`
+- `36f5d7d fix(ci): close cross-platform release checks`
+- `34bd114 fix: harden v2 provenance and release gates`
 
 ## Changed files
 
 - `M	.claude-plugin/marketplace.json`
 - `M	.claude-plugin/plugin.json`
-- `A	.github/CODEOWNERS`
+- `M	.gitattributes`
 - `M	.github/ISSUE_TEMPLATE/config.yml`
 - `M	.github/ISSUE_TEMPLATE/feature_request.yml`
 - `M	.github/workflows/ci.yml`
-- `M	.github/workflows/dependabot-automerge.yml`
 - `M	.gitignore`
+- `A	AGENTS.md`
 - `M	CHANGELOG.md`
 - `M	CITATION.cff`
 - `M	CLAUDE.md`
+- `A	CODEX.md`
 - `M	CODE_OF_CONDUCT.md`
 - `M	CONTRIBUTING.md`
+- `A	GEMINI.md`
 - `M	README.md`
 - `M	SECURITY.md`
 - `M	SUPPORT.md`
+- `A	THIRD_PARTY_NOTICES.md`
 - `M	ads/SKILL.md`
+- `A	ads/agents/openai.yaml`
+- `M	ads/references/additional-platforms.md`
+- `A	ads/references/amazon-audit.md`
+- `A	ads/references/apple-audit.md`
+- `A	ads/references/automation-tier-classifier.md`
 - `M	ads/references/benchmarks.md`
+- `M	ads/references/bidding-strategies.md`
+- `D	ads/references/brand-dna-template.md`
+- `M	ads/references/budget-allocation.md`
+- `A	ads/references/compliance-requirements.md`
+- `M	ads/references/compliance.md`
+- `M	ads/references/conversion-tracking.md`
+- `M	ads/references/copy-frameworks.md`
+- `A	ads/references/creative-source-registry.md`
+- `M	ads/references/gaql-notes.md`
+- `M	ads/references/google-audit.md`
+- `M	ads/references/google-creative-specs.md`
+- `M	ads/references/image-providers.md`
+- `M	ads/references/linkedin-audit.md`
+- `M	ads/references/linkedin-creative-specs.md`
 - `M	ads/references/mcp-integration.md`
+- `A	ads/references/meta-ai-stack.md`
+- `M	ads/references/meta-audit.md`
+- `M	ads/references/meta-creative-specs.md`
+- `M	ads/references/microsoft-audit.md`
+- `M	ads/references/microsoft-creative-specs.md`
+- `A	ads/references/pinterest-audit.md`
+- `M	ads/references/platform-specs.md`
+- `A	ads/references/prompt-patterns.md`
+- `A	ads/references/reddit-audit.md`
 - `M	ads/references/scoring-system.md`
-- `A	ads/references/thinking-framework.md`
+- `A	ads/references/snapchat-audit.md`
+- `A	ads/references/status-contract.md`
+- `M	ads/references/thinking-framework.md`
+- `M	ads/references/tiktok-audit.md`
+- `M	ads/references/tiktok-creative-specs.md`
+- `M	ads/references/voice-to-style.md`
+- `A	ads/references/x-audit.md`
+- `A	ads/references/youtube-audit.md`
+- `M	ads/references/youtube-creative-specs.md`
+- `D	ads/research-sources/README.md`
+- `D	ads/research-sources/claude-research.md`
+- `D	ads/research-sources/gemini-research.md`
+- `D	ads/research-sources/google-audit-checklists.md`
+- `D	ads/research-sources/google-optimization-logic.md`
+- `D	ads/research-sources/google-platform-specs.md`
+- `A	agents/audit-amazon.md`
+- `A	agents/audit-apple.md`
+- `M	agents/audit-budget.md`
+- `D	agents/audit-compliance.md`
+- `M	agents/audit-creative.md`
 - `M	agents/audit-google.md`
+- `A	agents/audit-linkedin.md`
 - `M	agents/audit-meta.md`
-- `A	assets/banner-pre-v1.7.0.png`
-- `M	assets/banner.png`
-- `A	assets/banner.svg`
-- `A	assets/diagrams/01-architecture-B.svg`
-- `D	assets/diagrams/01-architecture.svg`
-- `D	assets/diagrams/02-parallel-audit.svg`
-- `A	assets/diagrams/02-pipeline-A.svg`
-- `A	assets/diagrams/03-sub-skill-map-B.svg`
-- `A	assets/diagrams/04-scoring-weights-B.svg`
-- `A	assets/diagrams/05-roadmap-A.svg`
-- `D	assets/diagrams/13-scoring-algorithm.svg`
-- `A	branding/AGENT-PROMPT.md`
-- `A	branding/banner-template.html`
-- `M	install.ps1`
-- `M	install.sh`
-- `A	requirements-dev.txt`
-- `A	research/distribution-prep-v1.7.0.md`
-- `M	scripts/analyze_landing.py`
-- `M	scripts/capture_screenshot.py`
-- `M	scripts/fetch_page.py`
-- `M	scripts/generate_image.py`
-- `M	scripts/generate_report.py`
-- `M	scripts/url_utils.py`
-- `A	skills/ads-amazon/SKILL.md`
-- `M	skills/ads-apple/SKILL.md`
-- `A	skills/ads-attribution/SKILL.md`
-- `M	skills/ads-audit/SKILL.md`
-- `M	skills/ads-budget/SKILL.md`
-- `M	skills/ads-competitor/SKILL.md`
-- `M	skills/ads-create/SKILL.md`
-- `M	skills/ads-creative/SKILL.md`
-- `M	skills/ads-dna/SKILL.md`
-- `M	skills/ads-generate/SKILL.md`
-- `M	skills/ads-google/SKILL.md`
-- `M	skills/ads-landing/SKILL.md`
-- `M	skills/ads-linkedin/SKILL.md`
-- `M	skills/ads-math/SKILL.md`
-- `M	skills/ads-meta/SKILL.md`
-- `M	skills/ads-microsoft/SKILL.md`
-- `M	skills/ads-photoshoot/SKILL.md`
-- `M	skills/ads-plan/SKILL.md`
-- `M	skills/ads-plan/assets/mobile-app.md`
-- `A	skills/ads-server-side-tracking/SKILL.md`
-- `M	skills/ads-test/SKILL.md`
-- `M	skills/ads-tiktok/SKILL.md`
-- `M	skills/ads-youtube/SKILL.md`
-- `A	tests/audit/__init__.py`
-- `A	tests/audit/test_check_coverage.py`
-- `A	tests/audit/test_scoring_math.py`
-- `A	tests/conftest.py`
-- `A	tests/fixtures/check-catalog.yaml`
-- `A	tests/routing/__init__.py`
-- `A	tests/routing/test_creative_routing.py`
-- `A	tests/scripts/__init__.py`
-- `A	tests/scripts/test_url_utils.py`
-- `M	uninstall.ps1`
-- `M	uninstall.sh`
+- `A	agents/audit-microsoft.md`
+- `A	agents/audit-pinterest.md`
+- `A	agents/audit-policy-compliance.md`
+- `A	agents/audit-reddit.md`
+- `A	agents/audit-regulatory-compliance.md`
+- `A	agents/audit-snapchat.md`
+- `A	agents/audit-tiktok.md`
+- `M	agents/audit-tracking.md`
+- `A	agents/audit-x.md`
+- `A	agents/audit-youtube.md`
+- `M	agents/copy-writer.md`
+- `M	agents/creative-strategist.md`
+- `M	agents/format-adapter.md`
+- `A	agents/release-verifier.md`
+- `A	agents/research-worker.md`
+- `A	agents/skill-reviewer.md`
+- `A	agents/source-verifier.md`
+- `M	agents/visual-designer.md`
+- `D	assets/banner-pre-v1.7.0.png`
+- `D	assets/banner.png`
+- `M	assets/banner.svg`
+- `D	assets/diagrams/01-architecture-B.svg`
+- `D	assets/diagrams/02-pipeline-A.svg`
+- `D	assets/diagrams/03-sub-skill-map-B.svg`
+- `D	assets/diagrams/04-platform-checks.svg`
+- `D	assets/diagrams/04-scoring-weights-B.svg`
+- `D	assets/diagrams/05-quality-gates.svg`
+- `D	assets/diagrams/05-roadmap-A.svg`
+- `D	assets/diagrams/06-how-it-works.svg`
+- `D	assets/diagrams/07-data-flow.svg`
+- `D	assets/diagrams/08-industry-templates.svg`
+- `D	assets/diagrams/10-mcp-integration.svg`
+- `D	assets/diagrams/12-privacy-flow.svg`
+- `D	assets/diagrams/14-creative-pipeline.svg`
+- `D	assets/diagrams/15-platform-grid.svg`
+- `D	assets/diagrams/16-pdf-pipeline.svg`
+- `D	assets/diagrams/17-ab-testing.svg`
+- `D	assets/diagrams/18-ppc-calculators.svg`
+- `D	assets/diagrams/19-audit-lifecycle.svg`
+- `D	assets/diagrams/20-install-methods.svg`
+- `A	assets/diagrams/ads-health-score.svg`
+- `A	assets/diagrams/architecture.svg`
+- `A	assets/diagrams/how-it-works.svg`
+- `A	assets/diagrams/platform-coverage.svg`
+- `D	branding/AGENT-PROMPT.md`
+- `D	branding/banner-template.html`
 
 ## Command inventory
 
 - `amazon`
-- `apple`
-- `attribution`
-- `audit`
-- `budget`
-- `competitor`
+- `audit [all\|platform\|scope]`
 - `create`
-- `creative`
-- `dna`
-- `dna <url>`
-- `generate`
+- `experiment`
 - `google`
-- `landing`
-- `linkedin`
-- `math`
+- `launch --draft`
 - `meta`
-- `microsoft`
-- `photoshoot`
-- `plan <business-type>`
-- `plan <type>`
-- `plan agency`
+- `monitor`
+- `next`
+- `optimize --draft`
+- `plan`
+- `reddit`
 - `report`
-- `test`
-- `tiktok`
-- `tracking`
-- `youtube`
+- `research refresh`
+- `setup`
+- `status`
+- `validate`
