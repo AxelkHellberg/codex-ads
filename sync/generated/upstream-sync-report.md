@@ -1,102 +1,154 @@
 # Upstream Sync Report
 
 - Upstream repo: `https://github.com/AgriciDaniel/claude-ads`
-- Head SHA: `ac21644933910419529bcf81efb95a9ca71edf81`
-- Version: `2.0.2`
+- Head SHA: `fc3908e786c318776df89a3a098333da377364be`
+- Version: `2.1.0`
 
 ## Recent commits
 
-- `ac21644 docs: acknowledge community contributors in README`
-- `e38b530 fix(release): prepare v2.0.2 and close dependency guard alias gaps`
-- `0640124 Merge pull request #15: tracker review, guard hardening, and evidence refresh (2026-09-10)`
-- `760cb7c chore(evidence): refresh sources and claims as of 2026-09-10`
-- `c57ee31 fix(core): map ConversionsQualified in the Microsoft native export profile`
-- `a923712 chore(ecosystem): record tracker actions of 2026-09-10`
-- `cf8cce4 fix(ci): derive the review candidate on dispatch runs and record PR 14`
-- `6d147f6 chore(ecosystem): refresh the disposition ledger and changelog`
-- `a49ac60 fix(install): preflight legacy installs and document the marketplace alias`
-- `c046344 feat(meta): apply the cold-start contract in planning and creation`
-- `7c77228 feat(google): add Search overlap controls G96 and G97`
-- `cc4fc30 fix(ci): give the live ecosystem gate CI and strict modes`
+- `fc3908e Merge pull request #96 from AgriciDaniel/claude/ci-speed`
+- `73428b8 chore(deps): group action updates and stop routine pip bumps`
+- `3e3276a ci: cancel superseded PR runs and stop Intel macOS timeouts`
+- `77304e2 release: Claude Ads 2.1.0 (#92)`
+- `4a74a5a release: Claude Ads 2.1.0`
+- `2d304bd Merge pull request #91 from AgriciDaniel/codex/ads-cockpit-v1`
+- `93b23c6 feat(cockpit): screens that fit, a story Overview, paging and a plainer demo`
+- `4c3f13e docs(evidence): refresh the LinkedIn API lifecycle claim after the 202510 sunset date`
+- `ba683f7 docs: stop advertising deterministic scoring, link the unreachable reference docs`
+- `8c3700c docs(readme): cycle the typed command through all twelve platforms, move status lower`
+- `858e703 docs(readme): themed visuals with platform marks and gentle motion`
+- `022cb34 docs(readme): plain-language README with static visuals, contributors moved`
 
 ## Changed files
 
 - `M	.claude-plugin/marketplace.json`
 - `M	.claude-plugin/plugin.json`
-- `A	.github/requirements-pip-audit.lock`
-- `A	.github/requirements-schema-tests.in`
-- `A	.github/requirements-schema-tests.lock`
+- `M	.github/ISSUE_TEMPLATE/bug_report.yml`
+- `M	.github/PULL_REQUEST_TEMPLATE.md`
+- `M	.github/dependabot.yml`
+- `A	.github/requirements-repository-audit.lock`
+- `A	.github/scripts/run_installer_ci.py`
 - `M	.github/workflows/ci.yml`
-- `A	.github/workflows/codeql.yml`
-- `M	.github/workflows/dependabot-automerge.yml`
+- `M	.github/workflows/codeql.yml`
 - `M	.gitignore`
 - `M	CHANGELOG.md`
 - `M	CITATION.cff`
 - `M	CONTRIBUTING.md`
+- `M	LICENSE`
 - `M	README.md`
 - `M	SECURITY.md`
+- `M	SUPPORT.md`
+- `M	THIRD_PARTY_NOTICES.md`
 - `M	ads/SKILL.md`
+- `M	ads/references/amazon-audit.md`
+- `M	ads/references/apple-audit.md`
 - `M	ads/references/bidding-strategies.md`
 - `M	ads/references/compliance-requirements.md`
 - `M	ads/references/compliance.md`
 - `M	ads/references/conversion-tracking.md`
+- `M	ads/references/gaql-notes.md`
 - `M	ads/references/google-audit.md`
+- `M	ads/references/linkedin-audit.md`
 - `M	ads/references/mcp-integration.md`
 - `M	ads/references/meta-ai-stack.md`
+- `M	ads/references/meta-audit.md`
+- `M	ads/references/microsoft-audit.md`
+- `M	ads/references/pinterest-audit.md`
 - `M	ads/references/platform-specs.md`
+- `M	ads/references/reddit-audit.md`
+- `M	ads/references/snapchat-audit.md`
+- `M	ads/references/tiktok-audit.md`
+- `M	ads/references/x-audit.md`
+- `M	ads/references/youtube-audit.md`
+- `M	agents/audit-amazon.md`
+- `M	agents/audit-apple.md`
+- `M	agents/audit-budget.md`
+- `M	agents/audit-creative.md`
+- `M	agents/audit-google.md`
+- `M	agents/audit-linkedin.md`
+- `M	agents/audit-meta.md`
+- `M	agents/audit-microsoft.md`
+- `M	agents/audit-pinterest.md`
+- `M	agents/audit-policy-compliance.md`
+- `M	agents/audit-reddit.md`
+- `M	agents/audit-regulatory-compliance.md`
+- `M	agents/audit-snapchat.md`
+- `M	agents/audit-tiktok.md`
+- `M	agents/audit-tracking.md`
+- `M	agents/audit-x.md`
+- `M	agents/audit-youtube.md`
+- `M	agents/copy-writer.md`
+- `M	agents/creative-strategist.md`
+- `M	agents/format-adapter.md`
+- `M	agents/release-verifier.md`
+- `M	agents/research-worker.md`
+- `M	agents/skill-reviewer.md`
+- `M	agents/source-verifier.md`
+- `M	agents/visual-designer.md`
+- `A	assets/NOTICE.md`
+- `A	assets/banner-dark.svg`
+- `A	assets/banner-light.svg`
+- `D	assets/banner.svg`
+- `D	assets/demo.gif`
+- `D	assets/diagrams/ads-health-score.svg`
+- `D	assets/diagrams/architecture.svg`
+- `D	assets/diagrams/how-it-works.svg`
+- `D	assets/diagrams/platform-coverage.svg`
+- `A	assets/how-it-works-dark.svg`
+- `A	assets/how-it-works-light.svg`
+- `A	assets/platforms-dark.svg`
+- `A	assets/platforms-light.svg`
+- `A	assets/trust-dark.svg`
+- `A	assets/trust-light.svg`
+- `M	claude_ads_core/__init__.py`
 - `M	claude_ads_core/adapters/mappings_v1.py`
-- `M	claude_ads_core/adapters/native_export.py`
+- `M	claude_ads_core/cli.py`
+- `A	claude_ads_core/cockpit.py`
+- `A	claude_ads_core/cockpit_contracts.py`
+- `A	claude_ads_core/cockpit_demo.py`
+- `A	claude_ads_core/cockpit_io.py`
+- `M	claude_ads_core/contracts.py`
+- `M	claude_ads_core/control_registry.py`
+- `M	claude_ads_core/models.py`
+- `A	claude_ads_core/policy_root.py`
+- `M	claude_ads_core/product_status.py`
+- `A	claude_ads_core/report_policy.py`
 - `M	claude_ads_core/reporting.py`
-- `M	claude_ads_core/workflow_models.py`
+- `A	claude_ads_core/schemas/v1/audit-worker-result.schema.json`
+- `A	claude_ads_core/schemas/v1/cockpit-action-receipt.schema.json`
+- `A	claude_ads_core/schemas/v1/cockpit-index.schema.json`
+- `A	claude_ads_core/schemas/v1/cockpit-snapshot.schema.json`
+- `M	claude_ads_core/schemas/v1/finding.schema.json`
+- `A	control-plane/COCKPIT.md`
+- `M	control-plane/PRODUCT_BOUNDARIES.md`
+- `M	control-plane/PUBLISHING_POLICY.md`
+- `M	control-plane/README.md`
 - `M	control-plane/RELEASE_REQUIREMENTS.md`
-- `M	control-plane/REQUIREMENT_INDEX.md`
-- `M	control-plane/manifests/claim-ledger.json`
-- `M	control-plane/manifests/control-registry.json`
-- `M	control-plane/manifests/ecosystem-dispositions.json`
-- `M	control-plane/manifests/source-ledger.json`
-- `A	control-plane/manifests/vulnerability-exceptions.json`
-- `A	control-plane/migrations/control-schemas-v1-to-v2.md`
-- `M	control-plane/schemas/ecosystem-dispositions.schema.json`
-- `A	control-plane/schemas/ecosystem-dispositions.v1.schema.json`
-- `M	control-plane/schemas/release-gate-report.schema.json`
-- `A	control-plane/schemas/release-gate-report.v1.schema.json`
-- `A	control-plane/schemas/vulnerability-exceptions.schema.json`
-- `M	evals/model_eval_gate.py`
-- `M	install.ps1`
-- `M	install.sh`
-- `M	scripts/analyze_landing.py`
-- `A	scripts/audit_dependencies.py`
-- `A	scripts/audit_ecosystem_live.py`
-- `M	scripts/build_control_registry.py`
-- `M	scripts/generate_image.py`
-- `M	scripts/generate_report.py`
-- `M	scripts/release.py`
-- `M	scripts/write_install_receipt.py`
-- `M	skills/ads-create/SKILL.md`
-- `M	skills/ads-google/SKILL.md`
-- `M	skills/ads-meta/SKILL.md`
-- `M	skills/ads-microsoft/SKILL.md`
-- `M	skills/ads-plan/SKILL.md`
-- `M	tests/audit/test_source_grounding.py`
-- `M	tests/fixtures/check-catalog.yaml`
-- `M	tests/fixtures/native_exports/microsoft.csv`
-- `M	tests/references/test_cross_platform_references.py`
-- `A	tests/release/test_ecosystem_live.py`
-- `M	tests/release/test_release.py`
-- `M	tests/release/test_target_lock_verifier.py`
-- `M	tests/routing/test_canonical_behavior_surfaces.py`
-- `M	tests/routing/test_model_eval_gate.py`
-- `A	tests/scripts/test_analyze_landing.py`
-- `A	tests/scripts/test_audit_dependencies.py`
-- `M	tests/scripts/test_generate_image_provider_selection.py`
-- `A	tests/scripts/test_generate_report.py`
-- `M	tests/scripts/test_installer_security.py`
-- `M	uninstall.sh`
+- `M	control-plane/dependency-evidence/development-linux-cp311.json`
+- `M	control-plane/dependency-evidence/development-linux-cp312.json`
+- `M	control-plane/dependency-evidence/development-macos-arm-cp311.json`
+- `M	control-plane/dependency-evidence/development-macos-arm-cp312.json`
+- `M	control-plane/dependency-evidence/development-macos-x86-cp311.json`
+- `M	control-plane/dependency-evidence/development-macos-x86-cp312.json`
+- `M	control-plane/dependency-evidence/development-windows-cp311.json`
+- `M	control-plane/dependency-evidence/development-windows-cp312.json`
+- `M	control-plane/dependency-evidence/runtime-linux-cp311.json`
+- `M	control-plane/dependency-evidence/runtime-linux-cp312.json`
+- `M	control-plane/dependency-evidence/runtime-macos-arm-cp311.json`
+- `M	control-plane/dependency-evidence/runtime-macos-arm-cp312.json`
+- `M	control-plane/dependency-evidence/runtime-macos-x86-cp311.json`
+- `M	control-plane/dependency-evidence/runtime-macos-x86-cp312.json`
+- `M	control-plane/dependency-evidence/runtime-windows-cp311.json`
+- `M	control-plane/dependency-evidence/runtime-windows-cp312.json`
+- `M	control-plane/manifests/capability-manifest.json`
 
 ## Command inventory
 
 - `amazon`
+- `audit`
 - `audit [all\|platform\|scope]`
+- `audit all`
+- `audit google`
 - `create`
 - `experiment`
 - `google`

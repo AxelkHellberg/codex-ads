@@ -1,6 +1,9 @@
 [
   "amazon",
+  "audit",
   "audit [all\\|platform\\|scope]",
+  "audit all",
+  "audit google",
   "create",
   "experiment",
   "google",
