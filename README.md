@@ -76,6 +76,11 @@ Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:
 }
 ```
 
+Audit metrics use JSON booleans for boolean rules and finite JSON numbers for
+numeric rules. Strings such as `"false"` or `"0.08"`, containers and non-finite
+numbers produce warning findings rather than passing a rule or aborting the
+audit. Missing metrics retain their existing warning behavior.
+
 ## Daily sync
 
 The repository includes:

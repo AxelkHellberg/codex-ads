@@ -126,6 +126,16 @@ def _evaluate(rule: Rule, value: Any) -> tuple[str, float, str]:
     if value is None:
         return "warning", 45.0, "Metric missing. Supply account data for a sharper assessment."
 
+    if rule.evaluator in {"bool_true", "bool_false"} and not isinstance(value, bool):
+        return "warning", 45.0, f"Invalid {rule.metric}: expected a JSON boolean."
+    if rule.evaluator in {"min", "max"}:
+        try:
+            valid = not isinstance(value, bool) and isinstance(value, (int, float)) and math.isfinite(value)
+        except OverflowError:
+            valid = False
+        if not valid:
+            return "warning", 45.0, f"Invalid {rule.metric}: expected a finite JSON number."
+
     if rule.evaluator == "bool_true":
         status = "pass" if bool(value) else "fail"
         score = 100.0 if status == "pass" else 10.0
