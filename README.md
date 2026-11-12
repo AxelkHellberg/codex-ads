@@ -76,6 +76,11 @@ Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:
 }
 ```
 
+Platform `budget` and optional `monthly_budget` values must be finite and
+nonnegative; numeric strings are accepted and normalized to numbers. Invalid
+budgets raise a field-specific error before reports are written. If every
+platform budget is zero or omitted, the portfolio keeps equal weighting.
+
 ## Daily sync
 
 The repository includes:
