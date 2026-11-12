@@ -160,8 +160,21 @@ def _format_metric(value: Any) -> str:
     return str(value)
 
 
+def _budget_value(value: Any, field: str) -> float:
+    try:
+        if isinstance(value, bool):
+            raise ValueError
+        amount = float(value)
+        if not math.isfinite(amount) or amount < 0:
+            raise ValueError
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(f"{field} must be a finite nonnegative number") from exc
+    return amount
+
+
 def audit_platform(name: str, payload: dict[str, Any]) -> dict[str, Any]:
     config = PLATFORM_CONFIG[name]
+    budget = _budget_value(payload.get("budget", 0), f"{name}.budget")
     metrics = payload.get("metrics", {})
     category_scores: dict[str, list[float]] = {key: [] for key in config["weights"]}
     findings = []
@@ -211,7 +224,7 @@ def audit_platform(name: str, payload: dict[str, Any]) -> dict[str, Any]:
     return {
         "platform": name,
         "label": config["label"],
-        "budget": payload.get("budget", 0),
+        "budget": budget,
         "score": round(weighted, 1),
         "grade": grade_for(weighted),
         "category_breakdown": category_breakdown,
@@ -222,20 +235,24 @@ def audit_platform(name: str, payload: dict[str, Any]) -> dict[str, Any]:
 
 def build_portfolio_audit(payload: dict[str, Any]) -> dict[str, Any]:
     platforms = payload.get("platforms", {})
+    monthly_budget = _budget_value(payload["monthly_budget"], "monthly_budget") if "monthly_budget" in payload else None
     results = []
     total_budget = 0.0
     for name in PLATFORM_CONFIG:
         if name in platforms:
             platform_payload = dict(platforms[name])
             platform_payload.setdefault("budget", 0)
-            total_budget += float(platform_payload["budget"])
-            results.append(audit_platform(name, platform_payload))
+            result = audit_platform(name, platform_payload)
+            total_budget += result["budget"]
+            if not math.isfinite(total_budget):
+                raise ValueError("total platform budget must be finite")
+            results.append(result)
 
     if not results:
         return {
             "business_type": payload.get("business_type", "unknown"),
             "goal": payload.get("goal", "unknown"),
-            "monthly_budget": payload.get("monthly_budget", 0),
+            "monthly_budget": monthly_budget if monthly_budget is not None else 0,
             "score": 0,
             "grade": "F",
             "platforms": [],
@@ -260,7 +277,7 @@ def build_portfolio_audit(payload: dict[str, Any]) -> dict[str, Any]:
     return {
         "business_type": payload.get("business_type", "unknown"),
         "goal": payload.get("goal", "unknown"),
-        "monthly_budget": payload.get("monthly_budget", total_budget),
+        "monthly_budget": monthly_budget if monthly_budget is not None else total_budget,
         "score": score,
         "grade": grade_for(score),
         "platforms": results,
