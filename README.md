@@ -76,6 +76,13 @@ Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:
 }
 ```
 
+Experiment plans require `0 < baseline_rate < 1`, a positive relative
+`minimum_detectable_effect` whose target rate is at most one, and a positive
+integer `weekly_visitors`. Numeric strings are accepted. Invalid inputs and
+sample sizes outside the supported numerical range raise `ValueError` before a
+plan is written. Valid inputs retain the existing approximation and minimum
+sample size; these checks do not establish statistical suitability for an experiment.
+
 ## Daily sync
 
 The repository includes:

@@ -559,11 +559,36 @@ def write_math_output(output_dir: str | Path, summary: dict[str, Any]) -> Path:
 
 
 def compute_ab_test(payload: dict[str, Any]) -> dict[str, Any]:
-    baseline_rate = float(payload.get("baseline_rate", 0.03))
-    minimum_detectable_effect = float(payload.get("minimum_detectable_effect", 0.15))
-    weekly_visitors = int(payload.get("weekly_visitors", 10000))
-    sample_per_variant = max(1000, int((16 * baseline_rate * (1 - baseline_rate)) / (baseline_rate * minimum_detectable_effect) ** 2))
-    weeks = max(1, math.ceil((sample_per_variant * 2) / weekly_visitors))
+    def finite_number(field: str, default: float) -> float:
+        try:
+            value = payload.get(field, default)
+            if isinstance(value, bool):
+                raise ValueError
+            number = float(value)
+            if not math.isfinite(number):
+                raise ValueError
+            return number
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise ValueError(f"{field} must be a finite number") from exc
+
+    baseline_rate = finite_number("baseline_rate", 0.03)
+    minimum_detectable_effect = finite_number("minimum_detectable_effect", 0.15)
+    if not 0 < baseline_rate < 1:
+        raise ValueError("baseline_rate must be strictly between zero and one")
+    if minimum_detectable_effect <= 0 or minimum_detectable_effect > (1 - baseline_rate) / baseline_rate:
+        raise ValueError("minimum_detectable_effect must be positive and its relative uplift must not exceed a rate of one")
+    visitors = finite_number("weekly_visitors", 10000)
+    if visitors <= 0 or not visitors.is_integer():
+        raise ValueError("weekly_visitors must be a positive integer")
+    weekly_visitors = int(visitors)
+    try:
+        estimate = (16 * baseline_rate * (1 - baseline_rate)) / (baseline_rate * minimum_detectable_effect) ** 2
+        if not math.isfinite(estimate):
+            raise ValueError
+        sample_per_variant = max(1000, int(estimate))
+    except (ValueError, OverflowError, ZeroDivisionError) as exc:
+        raise ValueError("experiment parameters exceed the supported numerical range") from exc
+    weeks = max(1, (sample_per_variant * 2 + weekly_visitors - 1) // weekly_visitors)
     return {
         "baseline_rate": baseline_rate,
         "minimum_detectable_effect": minimum_detectable_effect,
