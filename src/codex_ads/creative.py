@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
@@ -13,27 +14,77 @@ def _fetch_html(url: str) -> str:
         return response.read().decode("utf-8", errors="ignore")
 
 
+class _BrandHTMLParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.title: list[str] | None = None
+        self.description: str | None = None
+        self.headings: list[list[str]] = []
+        self.text: list[str] = []
+        self._in_title = False
+        self._heading_tag: str | None = None
+        self._ignored_tag: str | None = None
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if self._ignored_tag:
+            return
+        if tag in {"script", "style"}:
+            self._ignored_tag = tag
+            return
+        if tag == "title" and self.title is None:
+            self.title = []
+            self._in_title = True
+        elif tag in {"h1", "h2", "h3"} and self._heading_tag is None and len(self.headings) < 6:
+            self.headings.append([])
+            self._heading_tag = tag
+        elif tag == "meta" and self.description is None:
+            attributes = dict(attrs)
+            if (attributes.get("name") or "").strip().casefold() == "description":
+                self.description = attributes.get("content") or ""
+        elif tag == "br":
+            self.handle_data(" ")
+
+    def handle_endtag(self, tag: str) -> None:
+        if self._ignored_tag:
+            if tag == self._ignored_tag:
+                self._ignored_tag = None
+            return
+        if tag == "title":
+            self._in_title = False
+        if tag == self._heading_tag:
+            self._heading_tag = None
+
+    def handle_data(self, data: str) -> None:
+        if self._ignored_tag:
+            return
+        self.text.append(data)
+        if self._in_title:
+            self.title.append(data)
+        if self._heading_tag:
+            self.headings[-1].append(data)
+
+
+def _plain_text(parts: list[str]) -> str:
+    return re.sub(r"\s+", " ", "".join(parts)).strip()
+
+
 def extract_brand_dna(url: str, html_text: str | None = None) -> dict:
     html = html_text if html_text is not None else _fetch_html(url)
     colors = sorted(set(match.lower() for match in re.findall(r"#[0-9a-fA-F]{6}", html)))[:8]
-    title_match = re.search(r"<title>(.*?)</title>", html, re.I | re.S)
-    description_match = re.search(
-        r'<meta[^>]+name=["\']description["\'][^>]+content=["\'](.*?)["\']',
-        html,
-        re.I | re.S,
-    )
-    headings = re.findall(r"<h[1-3][^>]*>(.*?)</h[1-3]>", html, re.I | re.S)
-    text_blob = re.sub(r"<[^>]+>", " ", html)
+    parsed = _BrandHTMLParser()
+    parsed.feed(html)
+    parsed.close()
+    text_blob = " ".join(parsed.text)
     words = re.findall(r"[A-Za-z]{4,}", text_blob.lower())
     strong_words = sorted(set(word for word in words if word in {"premium", "trusted", "fast", "growth", "clarity", "performance", "simple", "smart"}))
     host = urlparse(url).netloc or url
 
     return {
         "source_url": url,
-        "brand_name": title_match.group(1).strip() if title_match else host,
-        "description": description_match.group(1).strip() if description_match else "",
+        "brand_name": _plain_text(parsed.title or []) or host,
+        "description": (parsed.description or "").strip(),
         "color_palette": colors or ["#0b6e4f", "#1f2937", "#f4f6f8"],
-        "headline_themes": [re.sub(r"\s+", " ", item).strip() for item in headings[:6]],
+        "headline_themes": [_plain_text(parts) for parts in parsed.headings],
         "tone_keywords": strong_words or ["clear", "credible", "performance"],
         "visual_direction": [
             "use clean hierarchy and proof-first layouts",

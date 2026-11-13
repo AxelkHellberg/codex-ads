@@ -76,6 +76,11 @@ Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:
 }
 ```
 
+Brand DNA extraction parses static HTML title, description, and heading text.
+Description metadata accepts either attribute order, and character references
+are decoded once. Inline heading markup is removed from campaign copy; scripts,
+styles, and comments do not supply copy or tone keywords. JavaScript is not run.
+
 ## Daily sync
 
 The repository includes:
