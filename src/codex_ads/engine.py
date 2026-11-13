@@ -387,13 +387,38 @@ def _status_for(score: float) -> str:
     return "weak"
 
 
+def _review_metric(metrics: dict[str, Any], name: str, default: float,
+                   *, fraction: bool = False, count: bool = False) -> float:
+    value = metrics.get(name, default)
+    requirement = "a finite nonnegative number"
+    if fraction:
+        requirement = "a finite fraction from 0 to 1"
+    elif count:
+        requirement = "a finite nonnegative integer"
+    error = f"{name} must be {requirement}"
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(error)
+    try:
+        number = float(value)
+    except (OverflowError, ValueError) as exc:
+        raise ValueError(error) from exc
+    if (not math.isfinite(number) or number < 0
+            or (fraction and number > 1) or (count and not number.is_integer())):
+        raise ValueError(error)
+    return number
+
+
 def _build_creative_analysis(payload: dict[str, Any]) -> dict[str, Any]:
     metrics = payload.get("metrics", {})
+    angles = _review_metric(metrics, "creative_angles", 3, count=True)
+    fatigue = _review_metric(metrics, "fatigue_index", 0.4, fraction=True)
+    native_fit = _review_metric(metrics, "native_format_coverage", 0.7, fraction=True)
+    video_mix = _review_metric(metrics, "video_asset_share", 0.5, fraction=True)
     scores = {
-        "variety": min(100, int(metrics.get("creative_angles", 3) * 20)),
-        "fatigue": max(0, 100 - int(metrics.get("fatigue_index", 0.4) * 100)),
-        "native_fit": int(metrics.get("native_format_coverage", 0.7) * 100),
-        "video_mix": int(metrics.get("video_asset_share", 0.5) * 100),
+        "variety": int(min(angles, 5) * 20),
+        "fatigue": 100 - int(fatigue * 100),
+        "native_fit": int(native_fit * 100),
+        "video_mix": int(video_mix * 100),
     }
     average = round(sum(scores.values()) / len(scores), 1)
     priorities = [
@@ -413,11 +438,15 @@ def _build_creative_analysis(payload: dict[str, Any]) -> dict[str, Any]:
 
 def _build_landing_analysis(payload: dict[str, Any]) -> dict[str, Any]:
     metrics = payload.get("metrics", {})
+    message_match = _review_metric(metrics, "message_match_score", 0.7, fraction=True)
+    lcp = _review_metric(metrics, "mobile_lcp_seconds", 3.5)
+    fields = _review_metric(metrics, "form_fields", 6, count=True)
+    trust = _review_metric(metrics, "trust_signal_count", 5, count=True)
     scores = {
-        "message_match": int(metrics.get("message_match_score", 0.7) * 100),
-        "speed": max(0, 100 - int(metrics.get("mobile_lcp_seconds", 3.5) * 12)),
-        "form_friction": max(0, 100 - int(metrics.get("form_fields", 6) * 10)),
-        "trust": min(100, int(metrics.get("trust_signal_count", 5) * 12)),
+        "message_match": int(message_match * 100),
+        "speed": max(0, 100 - int(min(lcp, 100) * 12)),
+        "form_friction": max(0, 100 - int(min(fields, 10) * 10)),
+        "trust": min(100, int(min(trust, 100) * 12)),
     }
     average = round(sum(scores.values()) / len(scores), 1)
     priorities = [
