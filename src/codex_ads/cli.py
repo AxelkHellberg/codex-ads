@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 
 from codex_ads.creative import (
@@ -77,8 +78,19 @@ def _load_brand_profile(path: str) -> dict:
 
 
 def _load_brief(path: str) -> dict:
-    text = Path(path).read_text()
-    return {"angles": [line[2:] for line in text.splitlines() if line.startswith("- ")] or ["performance clarity"]}
+    lines = Path(path).read_text().splitlines()
+    # Generated briefs also contain positioning, concepts and platform bullets.
+    # Keep accepting legacy bullet-only briefs, but scope structured briefs to
+    # the Angles section so those other fields cannot become asset angles.
+    structured = any(re.match(r"^##\s+", line) for line in lines)
+    in_angles = not structured
+    angles = []
+    for line in lines:
+        if structured and re.match(r"^#{1,2}\s+", line):
+            in_angles = bool(re.fullmatch(r"##\s+Angles\s*#*\s*", line, re.I))
+        elif in_angles and line.startswith("- ") and line[2:].strip():
+            angles.append(line[2:].strip())
+    return {"angles": angles or ["performance clarity"]}
 
 
 def main() -> None:
