@@ -56,6 +56,13 @@ ads photoshoot
 
 ## Example inputs
 
+Creative and landing reviews require finite JSON numbers: ratios such as
+`fatigue_index` and `message_match_score` range from 0 to 1; angle, form-field
+and trust-signal counts are nonnegative integers; `mobile_lcp_seconds` is
+nonnegative. Boolean values and numeric strings are rejected with a field-specific
+error before report output. Missing metrics retain the existing defaults. Valid
+counts and durations saturate their component scores within 0–100.
+
 Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:
 
 ```json
