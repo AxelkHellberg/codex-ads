@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+from html import escape
 from pathlib import Path
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
@@ -130,11 +131,11 @@ def _placeholder_asset(width: int, height: int, title: str, subtitle: str, palet
         height=height,
         inner_w=max(width - 48, 20),
         inner_h=max(height - 48, 20),
-        bg=bg,
-        card=card,
-        fg=fg,
-        title=title[:32],
-        subtitle=subtitle[:48],
+        bg=escape(bg, quote=True),
+        card=escape(card, quote=True),
+        fg=escape(fg, quote=True),
+        title=escape(title[:32], quote=False),
+        subtitle=escape(subtitle[:48], quote=False),
     )
 
 
