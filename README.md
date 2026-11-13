@@ -98,6 +98,10 @@ python3 scripts/sync_upstream.py --verify --commit --push
 
 Generated upstream inventories are written under `sync/generated/`.
 
+The `tracked_branch` in `sync/upstream-state.json` controls both the remote-head
+lookup and the shallow clone. A configured release branch can be synced even
+when its commits are absent from the upstream default branch.
+
 ## Verification
 
 ```bash

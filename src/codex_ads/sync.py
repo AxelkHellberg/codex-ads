@@ -155,14 +155,16 @@ def sync_repo(
     state_path = root / "sync" / "upstream-state.json"
     state = load_state(state_path)
     source_repo = state.get("upstream_repo", UPSTREAM_REPO)
-    head = upstream_head(source_repo, state.get("tracked_branch", DEFAULT_BRANCH))
+    tracked_branch = state.get("tracked_branch", DEFAULT_BRANCH)
+    head = upstream_head(source_repo, tracked_branch)
 
     if head == state.get("last_synced_sha"):
         return {"status": "noop", "head_sha": head, "message": "Upstream unchanged."}
 
     with tempfile.TemporaryDirectory(prefix="codex-ads-sync-") as tmp_dir:
         checkout = Path(tmp_dir) / "upstream"
-        _run(["git", "clone", "--depth", "50", source_repo, str(checkout)], capture=False)
+        _run(["git", "clone", "--depth", "50", "--branch", tracked_branch,
+              "--single-branch", source_repo, str(checkout)], capture=False)
         _run(["git", "checkout", head], cwd=checkout)
         snapshot = collect_upstream_snapshot(checkout, state.get("last_synced_sha"), head)
         snapshot["mapping_rules"] = mapping["rules"]
