@@ -76,6 +76,10 @@ Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:
 }
 ```
 
+Generated SVG placeholders keep brand and product names as literal text,
+including ampersands and angle brackets. Title and subtitle limits are applied
+before XML escaping, and palette values are escaped as attribute values.
+
 ## Daily sync
 
 The repository includes:
