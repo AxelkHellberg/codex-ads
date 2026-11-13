@@ -76,6 +76,13 @@ Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:
 }
 ```
 
+The `math` command accepts finite non-negative values for spend, clicks,
+conversions, revenue, and lifetime value (`ltv`). Numeric strings and fractional
+attributed conversions are supported. `gross_margin` is a fraction from 0 to 1
+(default 0.7). Invalid inputs and overflowing ratios raise a field-specific
+`ValueError` before writing output. With no conversions, CPA remains `null`;
+the other existing zero-denominator conventions and formulas are unchanged.
+
 ## Daily sync
 
 The repository includes:

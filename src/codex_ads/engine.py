@@ -520,19 +520,40 @@ def write_analysis(output_dir: str | Path, analysis: dict[str, Any]) -> Path:
     return target
 
 
+def _math_input(payload: dict[str, Any], name: str, default: float = 0) -> float:
+    raw = payload.get(name, default)
+    message = f"{name} must be a finite non-negative number"
+    try:
+        if isinstance(raw, bool):
+            raise ValueError(message)
+        value = float(raw)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError(message) from exc
+    if not math.isfinite(value) or value < 0:
+        raise ValueError(message)
+    return value
+
+
 def compute_math_model(payload: dict[str, Any]) -> dict[str, Any]:
-    spend = float(payload.get("spend", 0))
-    clicks = float(payload.get("clicks", 0))
-    conversions = float(payload.get("conversions", 0))
-    revenue = float(payload.get("revenue", 0))
-    gross_margin = float(payload.get("gross_margin", 0.7))
-    ltv = float(payload.get("ltv", 0))
+    spend = _math_input(payload, "spend")
+    clicks = _math_input(payload, "clicks")
+    conversions = _math_input(payload, "conversions")
+    revenue = _math_input(payload, "revenue")
+    gross_margin = _math_input(payload, "gross_margin", 0.7)
+    ltv = _math_input(payload, "ltv")
+    if gross_margin > 1:
+        raise ValueError("gross_margin must be a fraction between 0 and 1")
 
     cpc = spend / clicks if clicks else 0
-    cpa = spend / conversions if conversions else math.inf
+    cpa = spend / conversions if conversions else None
     roas = revenue / spend if spend else 0
     break_even_cpa = (revenue * gross_margin / conversions) if conversions else 0
-    ltv_cac = (ltv / cpa) if conversions and cpa not in {0, math.inf} else 0
+    ltv_cac = (ltv / cpa) if cpa else 0
+
+    ratios = {"cpc": cpc, "cpa": cpa, "roas": roas, "break_even_cpa": break_even_cpa, "ltv_cac": ltv_cac}
+    for name, value in ratios.items():
+        if value is not None and not math.isfinite(value):
+            raise ValueError(f"{name} exceeds the finite numeric range")
 
     return {
         "spend": spend,
@@ -540,7 +561,7 @@ def compute_math_model(payload: dict[str, Any]) -> dict[str, Any]:
         "conversions": conversions,
         "revenue": revenue,
         "cpc": round(cpc, 2),
-        "cpa": None if cpa is math.inf else round(cpa, 2),
+        "cpa": None if cpa is None else round(cpa, 2),
         "roas": round(roas, 2),
         "break_even_cpa": round(break_even_cpa, 2),
         "ltv_cac": round(ltv_cac, 2),
