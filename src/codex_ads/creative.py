@@ -139,6 +139,14 @@ def _placeholder_asset(width: int, height: int, title: str, subtitle: str, palet
 
 
 def generate_asset_prompts(output_dir: str | Path, profile: dict, brief: dict, placeholder: bool = True) -> dict:
+    if not isinstance(brief, dict):
+        raise ValueError("brief must be a JSON object")
+    angles = brief.get("angles")
+    if not isinstance(angles, list) or not angles or any(
+        not isinstance(angle, str) or not angle.strip() for angle in angles
+    ):
+        raise ValueError("brief.angles must be a nonempty list of nonempty strings")
+
     asset_dir = Path(output_dir) / "ad-assets"
     asset_dir.mkdir(parents=True, exist_ok=True)
     specs = {
@@ -149,7 +157,7 @@ def generate_asset_prompts(output_dir: str | Path, profile: dict, brief: dict, p
     }
     manifest = {"brand": profile["brand_name"], "assets": []}
     for name, dims in specs.items():
-        prompt = f"Create a paid media asset for {profile['brand_name']} with tone {', '.join(profile['tone_keywords'])} and angle {brief['angles'][0]}."
+        prompt = f"Create a paid media asset for {profile['brand_name']} with tone {', '.join(profile['tone_keywords'])} and angle {angles[0]}."
         record = {"name": name, "width": dims[0], "height": dims[1], "prompt": prompt}
         if placeholder:
             asset_path = asset_dir / f"{name}.svg"
