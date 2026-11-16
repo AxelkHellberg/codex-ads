@@ -76,6 +76,17 @@ Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:
 }
 ```
 
+## Budget reviews
+
+Budget reviews accept a `spend` object mapping channel names to finite,
+nonnegative amounts (numbers or numeric strings). For example,
+`{"spend": {"search": 750, "social": 250}}` reports 75% and 25% shares.
+Invalid amounts or an overflowing total fail before a report is written.
+Missing or all-zero spend returns an `insufficient-data` status and no score.
+With positive spend, each allocation warning deducts eight points from 100,
+with a floor of zero; an allocation without warnings has `strong` status.
+These are allocation heuristics, not a measure of campaign performance.
+
 ## Daily sync
 
 The repository includes:

@@ -436,8 +436,34 @@ def _build_landing_analysis(payload: dict[str, Any]) -> dict[str, Any]:
 
 
 def _build_budget_analysis(payload: dict[str, Any]) -> dict[str, Any]:
-    spend = payload.get("spend", {})
-    total = sum(spend.values()) or 1
+    raw_spend = payload.get("spend", {})
+    if not isinstance(raw_spend, dict):
+        raise ValueError("spend must be an object mapping channels to amounts")
+    spend = {}
+    for platform, value in raw_spend.items():
+        message = f"spend.{platform} must be a finite nonnegative amount"
+        if isinstance(value, bool) or not isinstance(value, (int, float, str)):
+            raise ValueError(message)
+        try:
+            amount = float(value)
+        except (ValueError, OverflowError) as exc:
+            raise ValueError(message) from exc
+        if not math.isfinite(amount) or amount < 0:
+            raise ValueError(message)
+        spend[platform] = amount
+    try:
+        total = math.fsum(spend.values())
+    except OverflowError as exc:
+        raise ValueError("total spend must be finite") from exc
+    if not total:
+        return {
+            "title": "Budget Review",
+            "score": None,
+            "status": "insufficient-data",
+            "metrics": {platform: 0.0 for platform in spend},
+            "priorities": ["Supply positive channel spend before assessing allocation."],
+            "filename": "ADS-BUDGET-REVIEW.md",
+        }
     recommendations = []
     for platform, amount in sorted(spend.items()):
         share = amount / total
@@ -445,14 +471,12 @@ def _build_budget_analysis(payload: dict[str, Any]) -> dict[str, Any]:
             recommendations.append(f"Reduce concentration risk on {platform} or justify why it earns {share:.0%} of budget.")
         elif share < 0.1:
             recommendations.append(f"Decide whether {platform} deserves more budget or should be paused as noise.")
-    if not recommendations:
-        recommendations.append("Current allocation looks balanced across the supplied channels.")
     return {
         "title": "Budget Review",
-        "score": round(100 - (len(recommendations) - 1) * 8, 1),
+        "score": max(0, 100 - len(recommendations) * 8),
         "status": "watch" if recommendations else "strong",
         "metrics": {platform: round(amount / total * 100, 1) for platform, amount in spend.items()},
-        "priorities": recommendations,
+        "priorities": recommendations or ["Current allocation looks balanced across the supplied channels."],
         "filename": "ADS-BUDGET-REVIEW.md",
     }
 
