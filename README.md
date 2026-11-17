@@ -54,6 +54,10 @@ ads photoshoot
 4. Run `codex-ads dna --url https://example.com --html-file sample.html` or let Codex inspect the page directly.
 5. Run `codex-ads create` and `codex-ads generate` to build briefs, asset prompts, and placeholder assets ready for Codex image generation.
 
+When `dna` fetches a URL, it decodes the page using the HTTP `Content-Type`
+charset. Missing or unsupported charsets fall back to UTF-8. Malformed bytes
+are ignored, as before; HTML meta charset declarations are not used for decoding.
+
 ## Example inputs
 
 Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:
