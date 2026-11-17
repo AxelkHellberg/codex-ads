@@ -166,7 +166,15 @@ def sync_repo(
         _run(["git", "clone", "--depth", "50", "--branch", tracked_branch,
               "--single-branch", source_repo, str(checkout)], capture=False)
         _run(["git", "checkout", head], cwd=checkout)
-        snapshot = collect_upstream_snapshot(checkout, state.get("last_synced_sha"), head)
+        previous_sha = state.get("last_synced_sha")
+        if previous_sha:
+            try:
+                _run(["git", "cat-file", "-e", f"{previous_sha}^{{commit}}"], cwd=checkout)
+            except subprocess.CalledProcessError:
+                # A missed sync can put the checkpoint outside the shallow clone.
+                _run(["git", "fetch", "--depth", "1", "origin", previous_sha], cwd=checkout)
+                _run(["git", "cat-file", "-e", f"{previous_sha}^{{commit}}"], cwd=checkout)
+        snapshot = collect_upstream_snapshot(checkout, previous_sha, head)
         snapshot["mapping_rules"] = mapping["rules"]
         write_generated(root, snapshot)
 

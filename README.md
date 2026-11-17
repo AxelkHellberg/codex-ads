@@ -102,6 +102,11 @@ The `tracked_branch` in `sync/upstream-state.json` controls both the remote-head
 lookup and the shallow clone. A configured release branch can be synced even
 when its commits are absent from the upstream default branch.
 
+Sync starts with a shallow upstream clone. If the previous checkpoint is older
+than that history window, it fetches the checkpoint before calculating the change
+inventory. An unavailable checkpoint stops the sync without advancing its state
+or replacing generated inventories.
+
 ## Verification
 
 ```bash
