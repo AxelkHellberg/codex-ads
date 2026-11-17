@@ -10,7 +10,12 @@ from urllib.request import Request, urlopen
 def _fetch_html(url: str) -> str:
     request = Request(url, headers={"User-Agent": "codex-ads/0.1"})
     with urlopen(request, timeout=10) as response:
-        return response.read().decode("utf-8", errors="ignore")
+        body = response.read()
+        charset = response.headers.get_content_charset() or "utf-8"
+        try:
+            return body.decode(charset, errors="ignore")
+        except LookupError:
+            return body.decode("utf-8", errors="ignore")
 
 
 def extract_brand_dna(url: str, html_text: str | None = None) -> dict:
