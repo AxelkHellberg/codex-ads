@@ -18,6 +18,7 @@ GENERATED_FILENAMES = (
     "upstream-sync-report.md",
     "upstream-commands.json",
 )
+SYNC_PATHS = tuple(f"sync/generated/{name}" for name in GENERATED_FILENAMES) + ("sync/upstream-state.json",)
 
 
 def _run(cmd: list[str], cwd: str | Path | None = None, capture: bool = True) -> subprocess.CompletedProcess:
@@ -156,15 +157,16 @@ def _write_verified_generated(repo_root: Path, snapshot: dict) -> None:
 
 
 def _git_changed(repo_root: Path) -> bool:
-    result = _run(["git", "status", "--porcelain"], cwd=repo_root)
+    result = _run(["git", "status", "--porcelain", "--", *SYNC_PATHS], cwd=repo_root)
     return bool(result.stdout.strip())
 
 
 def _commit_and_push(repo_root: Path, message: str, push: bool) -> None:
     if not _git_changed(repo_root):
         return
-    _run(["git", "add", "sync/generated", "sync/upstream-state.json"], cwd=repo_root)
-    _run(["git", "commit", "-m", message], cwd=repo_root)
+    _run(["git", "add", "--", *SYNC_PATHS], cwd=repo_root)
+    # A normal commit would also consume any unrelated work already in the index.
+    _run(["git", "commit", "--only", "-m", message, "--", *SYNC_PATHS], cwd=repo_root)
     if push:
         _run(["git", "push", "origin", "HEAD:main"], cwd=repo_root, capture=False)
 
