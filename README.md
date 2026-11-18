@@ -107,6 +107,11 @@ than that history window, it fetches the checkpoint before calculating the chang
 inventory. An unavailable checkpoint stops the sync without advancing its state
 or replacing generated inventories.
 
+With `--verify`, tests inspect the proposed generated output before the checkpoint
+advances. If verification fails, sync restores the previous generated files and
+removes newly created outputs, leaving the confirmed inventory and checkpoint
+together for the next attempt.
+
 ## Verification
 
 ```bash

@@ -13,6 +13,11 @@ from pathlib import Path
 
 UPSTREAM_REPO = "https://github.com/AgriciDaniel/claude-ads.git"
 DEFAULT_BRANCH = "main"
+GENERATED_FILENAMES = (
+    "upstream-inventory.json",
+    "upstream-sync-report.md",
+    "upstream-commands.json",
+)
 
 
 def _run(cmd: list[str], cwd: str | Path | None = None, capture: bool = True) -> subprocess.CompletedProcess:
@@ -97,9 +102,7 @@ def collect_upstream_snapshot(root: Path, previous_sha: str | None, current_sha:
 def write_generated(repo_root: Path, snapshot: dict) -> dict[str, Path]:
     generated = repo_root / "sync" / "generated"
     generated.mkdir(parents=True, exist_ok=True)
-    inventory_path = generated / "upstream-inventory.json"
-    report_path = generated / "upstream-sync-report.md"
-    commands_path = generated / "upstream-commands.json"
+    inventory_path, report_path, commands_path = (generated / name for name in GENERATED_FILENAMES)
 
     inventory_path.write_text(json.dumps(snapshot, indent=2) + "\n")
     commands_path.write_text(json.dumps(snapshot["commands"], indent=2) + "\n")
@@ -128,6 +131,28 @@ def write_generated(repo_root: Path, snapshot: dict) -> dict[str, Path]:
 
 def run_verification(repo_root: Path) -> None:
     _run([sys.executable, "-m", "pytest"], cwd=repo_root, capture=False)
+
+
+def _write_verified_generated(repo_root: Path, snapshot: dict) -> None:
+    generated = repo_root / "sync" / "generated"
+    directory_existed = generated.exists()
+    previous = {
+        generated / name: (generated / name).read_bytes() if (generated / name).exists() else None
+        for name in GENERATED_FILENAMES
+    }
+    try:
+        write_generated(repo_root, snapshot)
+        run_verification(repo_root)
+    except BaseException:
+        # Keep the last confirmed inventory paired with its unchanged checkpoint.
+        for path, content in previous.items():
+            if content is None:
+                path.unlink(missing_ok=True)
+            else:
+                path.write_bytes(content)
+        if not directory_existed and generated.exists() and not any(generated.iterdir()):
+            generated.rmdir()
+        raise
 
 
 def _git_changed(repo_root: Path) -> bool:
@@ -176,10 +201,10 @@ def sync_repo(
                 _run(["git", "cat-file", "-e", f"{previous_sha}^{{commit}}"], cwd=checkout)
         snapshot = collect_upstream_snapshot(checkout, previous_sha, head)
         snapshot["mapping_rules"] = mapping["rules"]
-        write_generated(root, snapshot)
-
-    if verify:
-        run_verification(root)
+        if verify:
+            _write_verified_generated(root, snapshot)
+        else:
+            write_generated(root, snapshot)
 
     state.update(
         {

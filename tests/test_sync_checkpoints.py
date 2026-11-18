@@ -93,3 +93,71 @@ def test_unavailable_checkpoint_preserves_state_and_generated_output(tmp_path: P
     assert state.read_bytes() == before_state
     assert inventory.read_bytes() == before_inventory
     assert list(generated.iterdir()) == [inventory]
+
+
+@pytest.mark.parametrize("existing", ["absent", "empty", "partial", "all"])
+def test_failed_verification_restores_generated_output(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, existing: str
+) -> None:
+    upstream, previous, head = make_upstream(tmp_path, 1)
+    repo = make_consumer(tmp_path, upstream, previous)
+    generated = repo / "sync" / "generated"
+    names = ["upstream-inventory.json", "upstream-commands.json", "upstream-sync-report.md"]
+    if existing != "absent":
+        generated.mkdir()
+    if existing in {"partial", "all"}:
+        for name in names[:1] if existing == "partial" else names:
+            (generated / name).write_bytes(f"Confirmed {name}\r\n".encode())
+        (generated / "local-note.txt").write_bytes(b"Keep unrelated files.\n")
+    before_files = {path.name: path.read_bytes() for path in generated.glob("*")}
+    state = repo / "sync" / "upstream-state.json"
+    before_state = state.read_bytes()
+    commits = []
+
+    def fail_verification(root: Path) -> None:
+        # Verification must inspect the proposed output before it is confirmed.
+        assert json.loads((generated / names[0]).read_text())["head_sha"] == head
+        assert all((generated / name).exists() for name in names)
+        assert state.read_bytes() == before_state
+        raise subprocess.CalledProcessError(1, ["python", "-m", "pytest"])
+
+    monkeypatch.setattr("codex_ads.sync.run_verification", fail_verification)
+    monkeypatch.setattr("codex_ads.sync._commit_and_push", lambda *args: commits.append(args))
+
+    with pytest.raises(subprocess.CalledProcessError):
+        sync_repo(repo, verify=True, commit=True, push=True)
+
+    assert state.read_bytes() == before_state
+    assert {path.name: path.read_bytes() for path in generated.glob("*")} == before_files
+    assert generated.exists() == (existing != "absent")
+    assert commits == []
+
+
+def test_successful_verification_keeps_new_output_and_advances_checkpoint(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    upstream, previous, head = make_upstream(tmp_path, 1)
+    repo = make_consumer(tmp_path, upstream, previous)
+    generated = repo / "sync" / "generated"
+    generated.mkdir()
+    inventory = generated / "upstream-inventory.json"
+    inventory.write_text('{"previous": "confirmed"}\n')
+    state = repo / "sync" / "upstream-state.json"
+    before_state = state.read_bytes()
+    verified = []
+
+    def verify_output(root: Path) -> None:
+        assert root == repo.resolve()
+        assert json.loads(inventory.read_text())["head_sha"] == head
+        assert json.loads((generated / "upstream-commands.json").read_text()) == ["audit"]
+        assert head in (generated / "upstream-sync-report.md").read_text()
+        assert state.read_bytes() == before_state
+        verified.append(root)
+
+    monkeypatch.setattr("codex_ads.sync.run_verification", verify_output)
+
+    assert sync_repo(repo, verify=True)["status"] == "updated"
+
+    assert verified == [repo.resolve()]
+    assert json.loads(inventory.read_text())["head_sha"] == head
+    assert json.loads(state.read_text())["last_synced_sha"] == head
