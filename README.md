@@ -98,6 +98,20 @@ python3 scripts/sync_upstream.py --verify --commit --push
 
 Generated upstream inventories are written under `sync/generated/`.
 
+The `tracked_branch` in `sync/upstream-state.json` controls both the remote-head
+lookup and the shallow clone. A configured release branch can be synced even
+when its commits are absent from the upstream default branch.
+
+Sync starts with a shallow upstream clone. If the previous checkpoint is older
+than that history window, it fetches the checkpoint before calculating the change
+inventory. An unavailable checkpoint stops the sync without advancing its state
+or replacing generated inventories.
+
+With `--verify`, tests inspect the proposed generated output before the checkpoint
+advances. If verification fails, sync restores the previous generated files and
+removes newly created outputs, leaving the confirmed inventory and checkpoint
+together for the next attempt.
+
 ## Verification
 
 ```bash

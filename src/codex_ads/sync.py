@@ -13,6 +13,12 @@ from pathlib import Path
 
 UPSTREAM_REPO = "https://github.com/AgriciDaniel/claude-ads.git"
 DEFAULT_BRANCH = "main"
+GENERATED_FILENAMES = (
+    "upstream-inventory.json",
+    "upstream-sync-report.md",
+    "upstream-commands.json",
+)
+SYNC_PATHS = tuple(f"sync/generated/{name}" for name in GENERATED_FILENAMES) + ("sync/upstream-state.json",)
 
 
 def _run(cmd: list[str], cwd: str | Path | None = None, capture: bool = True) -> subprocess.CompletedProcess:
@@ -97,9 +103,7 @@ def collect_upstream_snapshot(root: Path, previous_sha: str | None, current_sha:
 def write_generated(repo_root: Path, snapshot: dict) -> dict[str, Path]:
     generated = repo_root / "sync" / "generated"
     generated.mkdir(parents=True, exist_ok=True)
-    inventory_path = generated / "upstream-inventory.json"
-    report_path = generated / "upstream-sync-report.md"
-    commands_path = generated / "upstream-commands.json"
+    inventory_path, report_path, commands_path = (generated / name for name in GENERATED_FILENAMES)
 
     inventory_path.write_text(json.dumps(snapshot, indent=2) + "\n")
     commands_path.write_text(json.dumps(snapshot["commands"], indent=2) + "\n")
@@ -130,16 +134,39 @@ def run_verification(repo_root: Path) -> None:
     _run([sys.executable, "-m", "pytest"], cwd=repo_root, capture=False)
 
 
+def _write_verified_generated(repo_root: Path, snapshot: dict) -> None:
+    generated = repo_root / "sync" / "generated"
+    directory_existed = generated.exists()
+    previous = {
+        generated / name: (generated / name).read_bytes() if (generated / name).exists() else None
+        for name in GENERATED_FILENAMES
+    }
+    try:
+        write_generated(repo_root, snapshot)
+        run_verification(repo_root)
+    except BaseException:
+        # Keep the last confirmed inventory paired with its unchanged checkpoint.
+        for path, content in previous.items():
+            if content is None:
+                path.unlink(missing_ok=True)
+            else:
+                path.write_bytes(content)
+        if not directory_existed and generated.exists() and not any(generated.iterdir()):
+            generated.rmdir()
+        raise
+
+
 def _git_changed(repo_root: Path) -> bool:
-    result = _run(["git", "status", "--porcelain"], cwd=repo_root)
+    result = _run(["git", "status", "--porcelain", "--", *SYNC_PATHS], cwd=repo_root)
     return bool(result.stdout.strip())
 
 
 def _commit_and_push(repo_root: Path, message: str, push: bool) -> None:
     if not _git_changed(repo_root):
         return
-    _run(["git", "add", "sync/generated", "sync/upstream-state.json"], cwd=repo_root)
-    _run(["git", "commit", "-m", message], cwd=repo_root)
+    _run(["git", "add", "--", *SYNC_PATHS], cwd=repo_root)
+    # A normal commit would also consume any unrelated work already in the index.
+    _run(["git", "commit", "--only", "-m", message, "--", *SYNC_PATHS], cwd=repo_root)
     if push:
         _run(["git", "push", "origin", "HEAD:main"], cwd=repo_root, capture=False)
 
@@ -155,21 +182,31 @@ def sync_repo(
     state_path = root / "sync" / "upstream-state.json"
     state = load_state(state_path)
     source_repo = state.get("upstream_repo", UPSTREAM_REPO)
-    head = upstream_head(source_repo, state.get("tracked_branch", DEFAULT_BRANCH))
+    tracked_branch = state.get("tracked_branch", DEFAULT_BRANCH)
+    head = upstream_head(source_repo, tracked_branch)
 
     if head == state.get("last_synced_sha"):
         return {"status": "noop", "head_sha": head, "message": "Upstream unchanged."}
 
     with tempfile.TemporaryDirectory(prefix="codex-ads-sync-") as tmp_dir:
         checkout = Path(tmp_dir) / "upstream"
-        _run(["git", "clone", "--depth", "50", source_repo, str(checkout)], capture=False)
+        _run(["git", "clone", "--depth", "50", "--branch", tracked_branch,
+              "--single-branch", source_repo, str(checkout)], capture=False)
         _run(["git", "checkout", head], cwd=checkout)
-        snapshot = collect_upstream_snapshot(checkout, state.get("last_synced_sha"), head)
+        previous_sha = state.get("last_synced_sha")
+        if previous_sha:
+            try:
+                _run(["git", "cat-file", "-e", f"{previous_sha}^{{commit}}"], cwd=checkout)
+            except subprocess.CalledProcessError:
+                # A missed sync can put the checkpoint outside the shallow clone.
+                _run(["git", "fetch", "--depth", "1", "origin", previous_sha], cwd=checkout)
+                _run(["git", "cat-file", "-e", f"{previous_sha}^{{commit}}"], cwd=checkout)
+        snapshot = collect_upstream_snapshot(checkout, previous_sha, head)
         snapshot["mapping_rules"] = mapping["rules"]
-        write_generated(root, snapshot)
-
-    if verify:
-        run_verification(root)
+        if verify:
+            _write_verified_generated(root, snapshot)
+        else:
+            write_generated(root, snapshot)
 
     state.update(
         {
