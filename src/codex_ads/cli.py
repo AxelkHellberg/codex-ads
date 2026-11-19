@@ -134,7 +134,10 @@ def main() -> None:
     if args.command == "create":
         profile = _load_brand_profile(args.brand_profile)
         context = load_json(args.context) if args.context else {}
-        brief = build_campaign_brief(profile, context)
+        try:
+            brief = build_campaign_brief(profile, context)
+        except ValueError as error:
+            parser().error(str(error))
         print(write_campaign_brief(args.output_dir, brief))
         return
 

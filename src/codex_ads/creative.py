@@ -53,8 +53,14 @@ def write_brand_profile(output_dir: str | Path, profile: dict) -> Path:
 
 def build_campaign_brief(profile: dict, context: dict | None = None) -> dict:
     context = context or {}
+    phases = context.get("phases")
+    if phases is None or phases == []:
+        phases = ["acquisition", "retargeting", "expansion"]
+    elif not isinstance(phases, list) or any(
+        not isinstance(phase, str) or not phase.strip() for phase in phases
+    ):
+        raise ValueError("context.phases must be a list of nonblank strings")
     tone = ", ".join(profile.get("tone_keywords", [])[:3])
-    phases = context.get("phases") or ["acquisition", "retargeting", "expansion"]
     concepts = []
     for phase in phases:
         concepts.append(
