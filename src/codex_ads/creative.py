@@ -138,7 +138,29 @@ def _placeholder_asset(width: int, height: int, title: str, subtitle: str, palet
     )
 
 
+class BrandProfileError(ValueError):
+    """A brand profile cannot supply valid asset text or palette values."""
+
+
+def _validate_asset_profile(profile: dict, *, require_palette: bool) -> None:
+    if not isinstance(profile, dict):
+        raise BrandProfileError("profile must be a JSON object")
+    name = profile.get("brand_name")
+    if not isinstance(name, str) or not name.strip():
+        raise BrandProfileError("profile.brand_name must be a nonempty string")
+    tone = profile.get("tone_keywords")
+    if not isinstance(tone, list) or any(not isinstance(item, str) or not item.strip() for item in tone):
+        raise BrandProfileError("profile.tone_keywords must be a list of nonempty strings")
+    if require_palette:
+        palette = profile.get("color_palette")
+        if not isinstance(palette, list) or not palette or any(
+            not isinstance(item, str) or not item.strip() for item in palette
+        ):
+            raise BrandProfileError("profile.color_palette must be a nonempty list of nonempty strings")
+
+
 def generate_asset_prompts(output_dir: str | Path, profile: dict, brief: dict, placeholder: bool = True) -> dict:
+    _validate_asset_profile(profile, require_palette=placeholder)
     asset_dir = Path(output_dir) / "ad-assets"
     asset_dir.mkdir(parents=True, exist_ok=True)
     specs = {
@@ -168,6 +190,7 @@ def generate_asset_prompts(output_dir: str | Path, profile: dict, brief: dict, p
 
 
 def generate_photoshoot_set(output_dir: str | Path, profile: dict, product_name: str = "Product") -> dict:
+    _validate_asset_profile(profile, require_palette=True)
     asset_dir = Path(output_dir) / "ad-assets"
     asset_dir.mkdir(parents=True, exist_ok=True)
     styles = ["studio", "floating", "ingredient", "in-use", "lifestyle"]
