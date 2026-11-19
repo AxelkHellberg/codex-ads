@@ -54,6 +54,12 @@ ads photoshoot
 4. Run `codex-ads dna --url https://example.com --html-file sample.html` or let Codex inspect the page directly.
 5. Run `codex-ads create` and `codex-ads generate` to build briefs, asset prompts, and placeholder assets ready for Codex image generation.
 
+To customize campaign phases, pass `--context context.json` to `codex-ads create`,
+with a JSON object such as `{"phases": ["acquisition", "loyalty"]}`. Phase names
+must be nonblank strings in a list; their order and text are preserved. Missing,
+null, or empty phase lists use the default acquisition, retargeting, and expansion
+phases. Invalid phase values are rejected before a brief is written.
+
 ## Example inputs
 
 Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:
