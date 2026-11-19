@@ -107,7 +107,10 @@ def main() -> None:
         payload = load_json(args.input_path)
         if args.command == "plan" and args.business_type:
             payload["business_type"] = args.business_type
-        analysis = build_generic_analysis(args.command, payload)
+        try:
+            analysis = build_generic_analysis(args.command, payload)
+        except ValueError as error:
+            parser().error(str(error))
         print(write_analysis(args.output_dir, analysis))
         return
 

@@ -458,7 +458,23 @@ def _build_budget_analysis(payload: dict[str, Any]) -> dict[str, Any]:
 
 
 def _build_competitor_analysis(payload: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(payload, dict):
+        raise ValueError("competitor input must be an object")
     competitors = payload.get("competitors", [])
+    if not isinstance(competitors, list):
+        raise ValueError("competitors must be a list of objects")
+    for index, item in enumerate(competitors):
+        field = f"competitors[{index}]"
+        if not isinstance(item, dict):
+            raise ValueError(f"{field} must be an object")
+        if not isinstance(item.get("name"), str) or not item["name"].strip():
+            raise ValueError(f"{field}.name must be a nonblank string")
+        for key in ("gaps", "opportunities"):
+            entries = item.get(key, [])
+            if not isinstance(entries, list) or any(
+                not isinstance(entry, str) or not entry.strip() for entry in entries
+            ):
+                raise ValueError(f"{field}.{key} must be a list of nonblank strings")
     gap_count = sum(len(item.get("gaps", [])) for item in competitors)
     opp_count = sum(len(item.get("opportunities", [])) for item in competitors)
     score = max(40, min(95, 60 + opp_count * 5 - gap_count * 2))
