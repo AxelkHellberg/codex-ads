@@ -76,6 +76,20 @@ Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:
 }
 ```
 
+## Competitor input
+
+For competitor reviews, provide a `competitors` list with a nonblank `name` for
+each entry. Optional `gaps` and `opportunities` fields must be lists of nonblank
+strings, for example:
+
+```json
+{"competitors": [{"name": "Example", "gaps": ["proof"], "opportunities": ["video"]}]}
+```
+
+Run `codex-ads competitor --input competitors.json`. Findings keep their order
+and text; omitted lists default to empty lists. Invalid input is rejected before
+the report is written. Scores remain heuristic summaries of the supplied findings.
+
 ## Daily sync
 
 The repository includes:
