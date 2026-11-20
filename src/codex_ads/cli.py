@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from codex_ads.creative import (
+    BrandProfileError,
     build_campaign_brief,
     extract_brand_dna,
     generate_asset_prompts,
@@ -82,7 +83,8 @@ def _load_brief(path: str) -> dict:
 
 
 def main() -> None:
-    args = parser().parse_args()
+    command_parser = parser()
+    args = command_parser.parse_args()
 
     if args.command == "audit":
         summary = build_portfolio_audit(load_json(args.input_path))
@@ -134,20 +136,29 @@ def main() -> None:
     if args.command == "create":
         profile = _load_brand_profile(args.brand_profile)
         context = load_json(args.context) if args.context else {}
-        brief = build_campaign_brief(profile, context)
+        try:
+            brief = build_campaign_brief(profile, context)
+        except BrandProfileError as exc:
+            command_parser.error(str(exc))
         print(write_campaign_brief(args.output_dir, brief))
         return
 
     if args.command == "generate":
         profile = _load_brand_profile(args.brand_profile)
         brief = load_json(args.brief_json) if args.brief_json else _load_brief(args.brief)
-        result = generate_asset_prompts(args.output_dir, profile, brief)
+        try:
+            result = generate_asset_prompts(args.output_dir, profile, brief)
+        except BrandProfileError as exc:
+            command_parser.error(str(exc))
         print(json.dumps({key: str(value) for key, value in result.items()}, indent=2))
         return
 
     if args.command == "photoshoot":
         profile = _load_brand_profile(args.brand_profile)
-        result = generate_photoshoot_set(args.output_dir, profile, args.product_name)
+        try:
+            result = generate_photoshoot_set(args.output_dir, profile, args.product_name)
+        except BrandProfileError as exc:
+            command_parser.error(str(exc))
         print(json.dumps({key: str(value) for key, value in result.items()}, indent=2))
         return
 
