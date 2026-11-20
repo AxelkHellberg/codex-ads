@@ -15,12 +15,14 @@ UPSTREAM_REPO = "https://github.com/AgriciDaniel/claude-ads.git"
 DEFAULT_BRANCH = "main"
 
 
-def _run(cmd: list[str], cwd: str | Path | None = None, capture: bool = True) -> subprocess.CompletedProcess:
+def _run(
+    cmd: list[str], cwd: str | Path | None = None, capture: bool = True, *, text: bool = True
+) -> subprocess.CompletedProcess:
     return subprocess.run(
         cmd,
         cwd=str(cwd) if cwd is not None else None,
         check=True,
-        text=True,
+        text=text,
         capture_output=capture,
     )
 
@@ -77,7 +79,19 @@ def collect_upstream_snapshot(root: Path, previous_sha: str | None, current_sha:
     ).stdout.splitlines()
 
     if previous_sha:
-        diff = _run(["git", "diff", "--name-status", previous_sha, current_sha], cwd=root).stdout.splitlines()
+        # NUL-delimited binary output preserves quoted characters and line breaks.
+        output = _run(
+            ["git", "diff", "--name-status", "-z", previous_sha, current_sha],
+            cwd=root,
+            text=False,
+        ).stdout
+        fields = iter(os.fsdecode(output).split("\0")[:-1])
+        diff = []
+        for status in fields:
+            paths = [next(fields)]
+            if status.startswith(("R", "C")):
+                paths.append(next(fields))
+            diff.append("\t".join([status, *paths]))
     else:
         diff = ["A\t" + str(path.relative_to(root)) for path in sorted(root.glob("**/*")) if path.is_file() and ".git/" not in str(path)]
 
@@ -122,7 +136,7 @@ def write_generated(repo_root: Path, snapshot: dict) -> dict[str, Path]:
     lines.extend(f"- `{item}`" for item in snapshot["changed_files"][:120])
     lines.extend(["", "## Command inventory", ""])
     lines.extend(f"- `{command}`" for command in snapshot["commands"])
-    report_path.write_text("\n".join(lines).strip() + "\n")
+    report_path.write_text("\n".join(lines).strip() + "\n", errors="backslashreplace")
     return {"inventory": inventory_path, "commands": commands_path, "report": report_path}
 
 
