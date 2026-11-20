@@ -53,7 +53,9 @@ def write_brand_profile(output_dir: str | Path, profile: dict) -> Path:
 
 def build_campaign_brief(profile: dict, context: dict | None = None) -> dict:
     context = context or {}
-    tone = ", ".join(profile.get("tone_keywords", [])[:3])
+    tone_keywords = profile.get("tone_keywords", [])
+    _validate_tone_keywords(tone_keywords)
+    tone = ", ".join(tone_keywords[:3])
     phases = context.get("phases") or ["acquisition", "retargeting", "expansion"]
     concepts = []
     for phase in phases:
@@ -68,7 +70,7 @@ def build_campaign_brief(profile: dict, context: dict | None = None) -> dict:
     return {
         "brand_name": profile["brand_name"],
         "positioning": profile.get("description", ""),
-        "tone_keywords": profile.get("tone_keywords", []),
+        "tone_keywords": tone_keywords,
         "angles": profile.get("headline_themes", [])[:4] or ["proof", "clarity", "speed"],
         "concepts": concepts,
         "platform_matrix": {
@@ -139,7 +141,12 @@ def _placeholder_asset(width: int, height: int, title: str, subtitle: str, palet
 
 
 class BrandProfileError(ValueError):
-    """A brand profile cannot supply valid asset text or palette values."""
+    """A brand profile cannot supply valid brief text, asset text or palette values."""
+
+
+def _validate_tone_keywords(tone: object) -> None:
+    if not isinstance(tone, list) or any(not isinstance(item, str) or not item.strip() for item in tone):
+        raise BrandProfileError("profile.tone_keywords must be a list of nonempty strings")
 
 
 def _validate_asset_profile(profile: dict, *, require_palette: bool) -> None:
@@ -148,9 +155,7 @@ def _validate_asset_profile(profile: dict, *, require_palette: bool) -> None:
     name = profile.get("brand_name")
     if not isinstance(name, str) or not name.strip():
         raise BrandProfileError("profile.brand_name must be a nonempty string")
-    tone = profile.get("tone_keywords")
-    if not isinstance(tone, list) or any(not isinstance(item, str) or not item.strip() for item in tone):
-        raise BrandProfileError("profile.tone_keywords must be a list of nonempty strings")
+    _validate_tone_keywords(profile.get("tone_keywords"))
     if require_palette:
         palette = profile.get("color_palette")
         if not isinstance(palette, list) or not palette or any(

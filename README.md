@@ -61,6 +61,10 @@ two-color palettes retain the default fallback colors. Invalid profiles return a
 CLI usage error before any asset output is created. Palette strings are not
 validated as CSS colors.
 
+`create` checks provided `tone_keywords` with the same list and string rules
+before formatting a campaign brief. Missing or empty tone lists retain the
+existing empty tone; valid text and list order are preserved.
+
 ## Example inputs
 
 Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:
