@@ -53,6 +53,11 @@ def write_brand_profile(output_dir: str | Path, profile: dict) -> Path:
 
 def build_campaign_brief(profile: dict, context: dict | None = None) -> dict:
     context = context or {}
+    themes = profile.get("headline_themes", [])
+    if not isinstance(themes, list) or any(
+        not isinstance(theme, str) or not theme.strip() for theme in themes
+    ):
+        raise ValueError("profile.headline_themes must be a list of nonblank strings")
     tone = ", ".join(profile.get("tone_keywords", [])[:3])
     phases = context.get("phases") or ["acquisition", "retargeting", "expansion"]
     concepts = []
@@ -69,7 +74,7 @@ def build_campaign_brief(profile: dict, context: dict | None = None) -> dict:
         "brand_name": profile["brand_name"],
         "positioning": profile.get("description", ""),
         "tone_keywords": profile.get("tone_keywords", []),
-        "angles": profile.get("headline_themes", [])[:4] or ["proof", "clarity", "speed"],
+        "angles": themes[:4] or ["proof", "clarity", "speed"],
         "concepts": concepts,
         "platform_matrix": {
             "google": "intent capture and direct-response hooks",

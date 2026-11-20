@@ -54,6 +54,11 @@ ads photoshoot
 4. Run `codex-ads dna --url https://example.com --html-file sample.html` or let Codex inspect the page directly.
 5. Run `codex-ads create` and `codex-ads generate` to build briefs, asset prompts, and placeholder assets ready for Codex image generation.
 
+For `create`, optional brand-profile `headline_themes` must be a list of nonblank
+strings. The first four themes become campaign angles in their original order
+and text. Missing or empty lists use the default proof, clarity, and speed angles;
+invalid themes return a CLI usage error before any brief output is created.
+
 ## Example inputs
 
 Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:
