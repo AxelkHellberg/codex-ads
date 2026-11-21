@@ -9,8 +9,34 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 
 
+def _validate_summary(summary: object) -> None:
+    if not isinstance(summary, dict):
+        raise ValueError("summary must be a JSON object")
+    platforms = summary.get("platforms", [])
+    if not isinstance(platforms, list):
+        raise ValueError("summary.platforms must be a list")
+    for platform_index, platform in enumerate(platforms):
+        path = f"summary.platforms[{platform_index}]"
+        if not isinstance(platform, dict):
+            raise ValueError(f"{path} must be a JSON object")
+        for field in ("label", "score", "grade"):
+            if field not in platform:
+                raise ValueError(f"{path}.{field} is required")
+        findings = platform.get("findings", [])
+        if not isinstance(findings, list):
+            raise ValueError(f"{path}.findings must be a list")
+        for finding_index, finding in enumerate(findings):
+            finding_path = f"{path}.findings[{finding_index}]"
+            if not isinstance(finding, dict):
+                raise ValueError(f"{finding_path} must be a JSON object")
+            for field in ("id", "severity", "title", "recommendation"):
+                if field not in finding:
+                    raise ValueError(f"{finding_path}.{field} is required")
+
+
 def build_pdf_report(summary_path: str | Path, output_dir: str | Path) -> Path:
     summary = json.loads(Path(summary_path).read_text())
+    _validate_summary(summary)
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
     target = output_path / "ADS-REPORT.pdf"
