@@ -54,6 +54,12 @@ ads photoshoot
 4. Run `codex-ads dna --url https://example.com --html-file sample.html` or let Codex inspect the page directly.
 5. Run `codex-ads create` and `codex-ads generate` to build briefs, asset prompts, and placeholder assets ready for Codex image generation.
 
+`report --summary` expects a JSON object. Its optional `platforms` list contains
+objects with `label`, `score`, and `grade`; each optional `findings` list contains
+objects with `id`, `severity`, `title`, and `recommendation`. Invalid structure
+produces a field-specific usage error before creating report output. Missing
+lists remain empty, and report text is displayed literally.
+
 ## Example inputs
 
 Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:

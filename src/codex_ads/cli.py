@@ -82,7 +82,8 @@ def _load_brief(path: str) -> dict:
 
 
 def main() -> None:
-    args = parser().parse_args()
+    command_parser = parser()
+    args = command_parser.parse_args()
 
     if args.command == "audit":
         summary = build_portfolio_audit(load_json(args.input_path))
@@ -122,7 +123,11 @@ def main() -> None:
         return
 
     if args.command == "report":
-        print(build_pdf_report(args.summary, args.output_dir))
+        try:
+            output = build_pdf_report(args.summary, args.output_dir)
+        except ValueError as error:
+            command_parser.error(str(error))
+        print(output)
         return
 
     if args.command == "dna":
