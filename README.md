@@ -54,6 +54,10 @@ ads photoshoot
 4. Run `codex-ads dna --url https://example.com --html-file sample.html` or let Codex inspect the page directly.
 5. Run `codex-ads create` and `codex-ads generate` to build briefs, asset prompts, and placeholder assets ready for Codex image generation.
 
+For `plan`, `business_type` must be a nonblank string. Omitting it uses `saas`;
+custom nonblank types use the generic three-phase plan. `--business-type` overrides
+the input field, and invalid values are rejected before creating a report.
+
 ## Example inputs
 
 Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:

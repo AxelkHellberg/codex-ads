@@ -482,6 +482,8 @@ def _build_competitor_analysis(payload: dict[str, Any]) -> dict[str, Any]:
 
 def _build_plan_analysis(payload: dict[str, Any]) -> dict[str, Any]:
     business_type = payload.get("business_type", "saas")
+    if not isinstance(business_type, str) or not business_type.strip():
+        raise ValueError("business_type must be a nonblank string.")
     phase_map = {
         "saas": ["Search + demand capture", "Paid social proofing", "Video retargeting"],
         "ecommerce": ["Search + shopping", "Meta prospecting", "Retention and creator scale"],
