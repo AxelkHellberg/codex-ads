@@ -4,7 +4,7 @@ import json
 import math
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 
 SEVERITY_ORDER = {"critical": 4, "high": 3, "medium": 2, "low": 1}
@@ -23,6 +23,7 @@ class Rule:
     warn: Any | None
     recommendation: str
     note: str
+    value_format: Literal["number", "percent"] = "number"
 
 
 PLATFORM_CONFIG: dict[str, dict[str, Any]] = {
@@ -39,7 +40,7 @@ PLATFORM_CONFIG: dict[str, dict[str, Any]] = {
         "rules": [
             Rule("G01", "Conversion tracking is live", "conversion", "critical", "conversion_tracking_enabled", "bool_true", True, None, "Define a primary conversion action and validate the firing path.", "Missing tracking invalidates spend decisions."),
             Rule("G02", "Enhanced conversions are enabled", "conversion", "high", "enhanced_conversions_enabled", "bool_true", True, None, "Enable enhanced conversions for web or leads.", "This closes conversion gaps for modeled attribution."),
-            Rule("G03", "Wasted spend stays below 15%", "waste", "critical", "wasted_spend_pct", "max", 0.05, 0.15, "Review search terms, negatives, and query intent filters.", "Paid search waste compounds quickly."),
+            Rule("G03", "Wasted spend stays below 15%", "waste", "critical", "wasted_spend_pct", "max", 0.05, 0.15, "Review search terms, negatives, and query intent filters.", "Paid search waste compounds quickly.", value_format="percent"),
             Rule("G04", "Brand and non-brand are separated", "structure", "high", "brand_nonbrand_split", "bool_true", True, None, "Split brand and non-brand into separate campaigns or portfolios.", "It is hard to tune bids otherwise."),
             Rule("G05", "Broad match is paired with smart bidding", "keywords", "critical", "broad_match_manual_cpc", "bool_false", False, None, "Move broad match traffic onto smart bidding or tighten match types.", "Broad match on manual CPC usually burns budget."),
             Rule("G06", "Search terms are reviewed every 14 days", "settings", "high", "search_term_review_days", "max", 7, 14, "Shorten the search term review cadence.", "Recent query drift matters."),
@@ -52,9 +53,9 @@ PLATFORM_CONFIG: dict[str, dict[str, Any]] = {
             Rule("M01", "Pixel or CAPI is active", "signal", "critical", "pixel_or_capi_live", "bool_true", True, None, "Repair browser and server-side events before changing campaigns.", "Optimization quality depends on signal density."),
             Rule("M02", "EMQ stays above 6.0", "signal", "high", "emq_score", "min", 8.0, 6.0, "Increase event match parameters and server-side identifiers.", "Low EMQ reduces modeled lift."),
             Rule("M03", "Creative diversity is healthy", "creative", "high", "distinct_creatives", "min", 10, 6, "Add genuinely distinct hooks, formats, and offers.", "Meta benefits from fresh creative breadth."),
-            Rule("M04", "Fatigue is under control", "creative", "medium", "fatigue_index", "max", 0.35, 0.55, "Rotate new concepts before the current set stalls.", "High fatigue drags CPM and CTR."),
-            Rule("M05", "Learning-limited share stays low", "structure", "high", "learning_limited_pct", "max", 0.20, 0.35, "Consolidate fragmented ad sets and reduce premature edits.", "Too much fragmentation keeps delivery unstable."),
-            Rule("M06", "Audience overlap stays below 25%", "audience", "medium", "audience_overlap_pct", "max", 0.15, 0.25, "Simplify overlapping ad sets and let broad targeting work.", "Overlap can inflate costs and muddle learning."),
+            Rule("M04", "Fatigue is under control", "creative", "medium", "fatigue_index", "max", 0.35, 0.55, "Rotate new concepts before the current set stalls.", "High fatigue drags CPM and CTR.", value_format="percent"),
+            Rule("M05", "Learning-limited share stays low", "structure", "high", "learning_limited_pct", "max", 0.20, 0.35, "Consolidate fragmented ad sets and reduce premature edits.", "Too much fragmentation keeps delivery unstable.", value_format="percent"),
+            Rule("M06", "Audience overlap stays below 25%", "audience", "medium", "audience_overlap_pct", "max", 0.15, 0.25, "Simplify overlapping ad sets and let broad targeting work.", "Overlap can inflate costs and muddle learning.", value_format="percent"),
         ],
     },
     "youtube": {
@@ -63,7 +64,7 @@ PLATFORM_CONFIG: dict[str, dict[str, Any]] = {
         "rules": [
             Rule("Y01", "Primary hook lands inside 5 seconds", "creative", "high", "hook_seconds", "max", 3, 5, "Recut the opening to land the promise earlier.", "Skippable formats punish slow openings."),
             Rule("Y02", "Channel includes multiple native formats", "format", "medium", "native_format_count", "min", 4, 2, "Build separate assets for Shorts, bumper, skippable, and Demand Gen.", "One format rarely carries the whole funnel."),
-            Rule("Y03", "Video completion stays above 20%", "creative", "medium", "video_completion_rate", "min", 0.35, 0.20, "Trim length and tighten story progression.", "Completion signals weak resonance."),
+            Rule("Y03", "Video completion stays above 20%", "creative", "medium", "video_completion_rate", "min", 0.35, 0.20, "Trim length and tighten story progression.", "Completion signals weak resonance.", value_format="percent"),
             Rule("Y04", "Measurement is tied to video outcomes", "measurement", "high", "video_conversions_modeled", "bool_true", True, None, "Set engaged-view and site conversions before optimization.", "Video spend without measurement is hard to defend."),
             Rule("Y05", "CTV coverage is intentional", "targeting", "low", "ctv_enabled", "bool_true", True, None, "Review whether CTV inventory should be on or explicitly excluded.", "Connected TV often changes CPM mix."),
         ],
@@ -74,16 +75,16 @@ PLATFORM_CONFIG: dict[str, dict[str, Any]] = {
         "rules": [
             Rule("L01", "Insight Tag is live", "signal", "critical", "insight_tag_live", "bool_true", True, None, "Fix the tag before expanding spend.", "LinkedIn optimization is weak without durable signals."),
             Rule("L02", "Audience size stays above 50k", "audience", "medium", "audience_size", "min", 150000, 50000, "Broaden targeting or stack exclusions differently.", "Tiny audiences spike CPM."),
-            Rule("L03", "Lead-gen form completion rate is healthy", "leadgen", "high", "form_completion_rate", "min", 0.20, 0.10, "Shorten the form and move lower-value questions downstream.", "Friction compounds on LinkedIn."),
+            Rule("L03", "Lead-gen form completion rate is healthy", "leadgen", "high", "form_completion_rate", "min", 0.20, 0.10, "Shorten the form and move lower-value questions downstream.", "Friction compounds on LinkedIn.", value_format="percent"),
             Rule("L04", "Creative variants cover multiple angles", "creative", "medium", "creative_angles", "min", 4, 2, "Build more variants by persona, pain, and proof type.", "B2B creatives need more than one angle."),
-            Rule("L05", "Budget is not trapped in testing", "budget", "medium", "campaigns_under_min_budget_pct", "max", 0.20, 0.40, "Concentrate spend into fewer ad groups or campaigns.", "Too many low-budget campaigns never exit learning."),
+            Rule("L05", "Budget is not trapped in testing", "budget", "medium", "campaigns_under_min_budget_pct", "max", 0.20, 0.40, "Concentrate spend into fewer ad groups or campaigns.", "Too many low-budget campaigns never exit learning.", value_format="percent"),
         ],
     },
     "tiktok": {
         "label": "TikTok Ads",
         "weights": {"creative": 0.30, "signal": 0.25, "bidding": 0.20, "structure": 0.15, "performance": 0.10},
         "rules": [
-            Rule("T01", "Creative is native to TikTok", "creative", "critical", "native_tiktok_ratio", "min", 0.80, 0.50, "Replace over-produced cuts with native-feeling hooks and pacing.", "TikTok punishes generic repurposed creative."),
+            Rule("T01", "Creative is native to TikTok", "creative", "critical", "native_tiktok_ratio", "min", 0.80, 0.50, "Replace over-produced cuts with native-feeling hooks and pacing.", "TikTok punishes generic repurposed creative.", value_format="percent"),
             Rule("T02", "Sound-on readiness is present", "creative", "high", "sound_on_ready", "bool_true", True, None, "Add spoken hooks, captions, and music-aware edits.", "Silent assets underperform on TikTok."),
             Rule("T03", "Events API or pixel is live", "signal", "critical", "events_api_live", "bool_true", True, None, "Stabilize signal collection before scale decisions.", "Signal quality drives Smart+ outcomes."),
             Rule("T04", "Budget can clear the learning bar", "bidding", "high", "daily_budget_vs_cpa_multiple", "min", 50, 20, "Raise budget or narrow testing scope.", "TikTok needs enough spend to learn."),
@@ -98,7 +99,7 @@ PLATFORM_CONFIG: dict[str, dict[str, Any]] = {
             Rule("B02", "Google import is reviewed recently", "structure", "medium", "google_import_review_days", "max", 7, 21, "Validate the imported settings and unsupported fields.", "Imports drift over time."),
             Rule("B03", "Audience network is intentional", "settings", "medium", "audience_network_opted_in", "bool_true", True, None, "Audit whether audience network placement matches the goal.", "Default inventory mix can mask performance."),
             Rule("B04", "Search partners are monitored", "syndication", "medium", "partner_performance_review_days", "max", 14, 30, "Break out search partners and trim weak syndication pockets.", "Partner traffic quality can vary widely."),
-            Rule("B05", "Responsive assets are complete", "creative", "high", "rsa_asset_coverage_pct", "min", 0.90, 0.70, "Complete headlines, descriptions, and image extensions.", "Sparse assets cap impression quality."),
+            Rule("B05", "Responsive assets are complete", "creative", "high", "rsa_asset_coverage_pct", "min", 0.90, 0.70, "Complete headlines, descriptions, and image extensions.", "Sparse assets cap impression quality.", value_format="percent"),
         ],
     },
     "apple": {
@@ -106,9 +107,9 @@ PLATFORM_CONFIG: dict[str, dict[str, Any]] = {
         "weights": {"structure": 0.25, "creative": 0.20, "signal": 0.20, "bids": 0.20, "coverage": 0.15},
         "rules": [
             Rule("A01", "Campaigns are split by intent", "structure", "high", "intent_split", "bool_true", True, None, "Separate branded, category, competitor, and discovery intents.", "Intent mixing distorts bid control."),
-            Rule("A02", "CPP coverage is broad enough", "creative", "medium", "cpp_coverage_pct", "min", 0.70, 0.40, "Create more Custom Product Pages mapped to major audiences.", "Low CPP coverage weakens message match."),
+            Rule("A02", "CPP coverage is broad enough", "creative", "medium", "cpp_coverage_pct", "min", 0.70, 0.40, "Create more Custom Product Pages mapped to major audiences.", "Low CPP coverage weakens message match.", value_format="percent"),
             Rule("A03", "AdAttributionKit or MMP is validated", "signal", "critical", "attribution_verified", "bool_true", True, None, "Verify attribution stack before scaling bids.", "Mobile spend without verified attribution is risky."),
-            Rule("A04", "Search match is constrained", "bids", "medium", "search_match_broad_pct", "max", 0.15, 0.30, "Tighten discovery and protect exact intent buckets.", "Too much search match can dilute spend."),
+            Rule("A04", "Search match is constrained", "bids", "medium", "search_match_broad_pct", "max", 0.15, 0.30, "Tighten discovery and protect exact intent buckets.", "Too much search match can dilute spend.", value_format="percent"),
             Rule("A05", "Placement coverage is deliberate", "coverage", "low", "tap_coverage_count", "min", 3, 2, "Review Search, Today, and Product Pages placements.", "Coverage should reflect the funnel plan."),
         ],
     },
@@ -152,10 +153,15 @@ def _evaluate(rule: Rule, value: Any) -> tuple[str, float, str]:
     return status, score, evidence
 
 
-def _format_metric(value: Any) -> str:
+def _format_metric(value: Any, value_format: str = "number") -> str:
+    if (
+        value_format == "percent"
+        and isinstance(value, (int, float))
+        and not isinstance(value, bool)
+        and 0 <= value <= 1
+    ):
+        return f"{value:.0%}"
     if isinstance(value, float):
-        if 0 <= value <= 1:
-            return f"{value:.0%}"
         return f"{value:.2f}"
     return str(value)
 
@@ -179,7 +185,7 @@ def audit_platform(name: str, payload: dict[str, Any]) -> dict[str, Any]:
                 "status": status,
                 "score": score,
                 "metric": rule.metric,
-                "value": _format_metric(value) if value is not None else "missing",
+                "value": _format_metric(value, rule.value_format) if value is not None else "missing",
                 "evidence": evidence,
                 "note": rule.note,
                 "recommendation": rule.recommendation,

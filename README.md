@@ -76,6 +76,11 @@ Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:
 }
 ```
 
+Audit finding values use the metric's units: fractional rates and shares appear
+as percentages, while durations, counts, scores and multiples remain numeric.
+Integer and decimal inputs for a fraction, such as `1` and `1.0`, both display
+as `100%`. Scoring and raw evidence values are unchanged.
+
 ## Daily sync
 
 The repository includes:
