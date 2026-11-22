@@ -81,17 +81,28 @@ def _load_brief(path: str) -> dict:
     return {"angles": [line[2:] for line in text.splitlines() if line.startswith("- ")] or ["performance clarity"]}
 
 
+def _load_input(path: str | None, command_parser: argparse.ArgumentParser) -> dict:
+    try:
+        payload = load_json(path)
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        command_parser.error(f"--input: {error}")
+    if not isinstance(payload, dict):
+        command_parser.error("--input must contain a JSON object")
+    return payload
+
+
 def main() -> None:
-    args = parser().parse_args()
+    command_parser = parser()
+    args = command_parser.parse_args()
 
     if args.command == "audit":
-        summary = build_portfolio_audit(load_json(args.input_path))
+        summary = build_portfolio_audit(_load_input(args.input_path, command_parser))
         outputs = write_audit_bundle(args.output_dir, summary)
         print(json.dumps({key: str(value) for key, value in outputs.items()}, indent=2))
         return
 
     if args.command in PLATFORM_CONFIG:
-        payload = load_json(args.input_path)
+        payload = _load_input(args.input_path, command_parser)
         platform_payload = payload.get("platforms", {}).get(args.command, payload)
         from codex_ads.engine import audit_platform
 
@@ -104,7 +115,7 @@ def main() -> None:
         return
 
     if args.command in {"creative", "landing", "budget", "competitor", "plan"}:
-        payload = load_json(args.input_path)
+        payload = _load_input(args.input_path, command_parser)
         if args.command == "plan" and args.business_type:
             payload["business_type"] = args.business_type
         analysis = build_generic_analysis(args.command, payload)
@@ -112,12 +123,12 @@ def main() -> None:
         return
 
     if args.command == "math":
-        summary = compute_math_model(load_json(args.input_path))
+        summary = compute_math_model(_load_input(args.input_path, command_parser))
         print(write_math_output(args.output_dir, summary))
         return
 
     if args.command == "test":
-        summary = compute_ab_test(load_json(args.input_path))
+        summary = compute_ab_test(_load_input(args.input_path, command_parser))
         print(write_test_plan(args.output_dir, summary))
         return
 

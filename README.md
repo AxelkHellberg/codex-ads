@@ -76,6 +76,8 @@ Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:
 }
 ```
 
+Files passed to `--input` must contain a JSON object. Invalid JSON, unreadable files, and other root values produce a usage error before reports are written. Omitting `--input` retains each command's existing defaults.
+
 ## Daily sync
 
 The repository includes:
