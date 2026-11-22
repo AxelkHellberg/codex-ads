@@ -15,6 +15,7 @@ from codex_ads.creative import (
 from codex_ads.engine import (
     PLATFORM_CONFIG,
     build_generic_analysis,
+    build_platform_audit,
     build_portfolio_audit,
     compute_ab_test,
     compute_math_model,
@@ -82,20 +83,23 @@ def _load_brief(path: str) -> dict:
 
 
 def main() -> None:
-    args = parser().parse_args()
+    command_parser = parser()
+    args = command_parser.parse_args()
 
     if args.command == "audit":
-        summary = build_portfolio_audit(load_json(args.input_path))
+        try:
+            summary = build_portfolio_audit(load_json(args.input_path))
+        except ValueError as exc:
+            command_parser.error(str(exc))
         outputs = write_audit_bundle(args.output_dir, summary)
         print(json.dumps({key: str(value) for key, value in outputs.items()}, indent=2))
         return
 
     if args.command in PLATFORM_CONFIG:
-        payload = load_json(args.input_path)
-        platform_payload = payload.get("platforms", {}).get(args.command, payload)
-        from codex_ads.engine import audit_platform
-
-        result = audit_platform(args.command, platform_payload)
+        try:
+            result = build_platform_audit(args.command, load_json(args.input_path))
+        except ValueError as exc:
+            command_parser.error(str(exc))
         output = Path(args.output_dir)
         output.mkdir(parents=True, exist_ok=True)
         target = output / f"{args.command}-audit.json"

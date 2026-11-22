@@ -170,9 +170,16 @@ def _format_metric(value: Any) -> str:
     return str(value)
 
 
+def _audit_object(value: Any, field: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ValueError(f"{field} must be a JSON object.")
+    return value
+
+
 def audit_platform(name: str, payload: dict[str, Any]) -> dict[str, Any]:
     config = PLATFORM_CONFIG[name]
-    metrics = payload.get("metrics", {})
+    payload = _audit_object(payload, name)
+    metrics = _audit_object(payload.get("metrics", {}), f"{name}.metrics")
     category_scores: dict[str, list[float]] = {key: [] for key in config["weights"]}
     findings = []
 
@@ -230,13 +237,20 @@ def audit_platform(name: str, payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def build_platform_audit(name: str, payload: dict[str, Any]) -> dict[str, Any]:
+    payload = _audit_object(payload, "audit input")
+    platforms = _audit_object(payload.get("platforms", {}), "platforms")
+    return audit_platform(name, platforms.get(name, payload))
+
+
 def build_portfolio_audit(payload: dict[str, Any]) -> dict[str, Any]:
-    platforms = payload.get("platforms", {})
+    payload = _audit_object(payload, "audit input")
+    platforms = _audit_object(payload.get("platforms", {}), "platforms")
     results = []
     total_budget = 0.0
     for name in PLATFORM_CONFIG:
         if name in platforms:
-            platform_payload = dict(platforms[name])
+            platform_payload = _audit_object(platforms[name], f"platforms.{name}").copy()
             platform_payload.setdefault("budget", 0)
             total_budget += float(platform_payload["budget"])
             results.append(audit_platform(name, platform_payload))

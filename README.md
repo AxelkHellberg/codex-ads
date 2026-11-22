@@ -81,6 +81,12 @@ numeric rules. Strings such as `"false"` or `"0.08"`, containers and non-finite
 numbers produce warning findings rather than passing a rule or aborting the
 audit. Missing metrics retain their existing warning behavior.
 
+Audit inputs, `platforms`, each selected platform and its `metrics` must be JSON
+objects. Explicit nulls, arrays and scalars in these positions are rejected with
+a field-specific CLI usage error before writing reports. Omitted `platforms`
+and `metrics` still default to empty objects. Individual platform commands accept
+both direct platform objects and the portfolio wrapper shown above.
+
 ## Daily sync
 
 The repository includes:
