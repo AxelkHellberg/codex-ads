@@ -76,6 +76,11 @@ Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:
 }
 ```
 
+Brand color extraction preserves complete 3-, 4-, 6-, and 8-digit CSS hex
+colors, including shorthand and alpha channels, in lowercase. Longer identifiers
+and invalid hex lengths do not contribute a partial color. The palette retains
+its sorted, unique, eight-color limit and existing fallback when none are found.
+
 ## Daily sync
 
 The repository includes:

@@ -15,7 +15,11 @@ def _fetch_html(url: str) -> str:
 
 def extract_brand_dna(url: str, html_text: str | None = None) -> dict:
     html = html_text if html_text is not None else _fetch_html(url)
-    colors = sorted(set(match.lower() for match in re.findall(r"#[0-9a-fA-F]{6}", html)))[:8]
+    colors = sorted({
+        match.lower()
+        for match in re.findall(r"#[0-9a-fA-F]{3,8}(?![\w-])", html)
+        if len(match) in {4, 5, 7, 9}
+    })[:8]
     title_match = re.search(r"<title>(.*?)</title>", html, re.I | re.S)
     description_match = re.search(
         r'<meta[^>]+name=["\']description["\'][^>]+content=["\'](.*?)["\']',
