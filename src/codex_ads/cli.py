@@ -73,11 +73,11 @@ def parser() -> argparse.ArgumentParser:
 
 
 def _load_brand_profile(path: str) -> dict:
-    return json.loads(Path(path).read_text())
+    return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
 def _load_brief(path: str) -> dict:
-    text = Path(path).read_text()
+    text = Path(path).read_text(encoding="utf-8")
     return {"angles": [line[2:] for line in text.splitlines() if line.startswith("- ")] or ["performance clarity"]}
 
 
@@ -126,7 +126,7 @@ def main() -> None:
         return
 
     if args.command == "dna":
-        html_text = Path(args.html_file).read_text() if args.html_file else None
+        html_text = Path(args.html_file).read_text(encoding="utf-8") if args.html_file else None
         profile = extract_brand_dna(args.url, html_text)
         print(write_brand_profile(args.output_dir, profile))
         return

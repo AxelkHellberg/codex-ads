@@ -47,7 +47,7 @@ def write_brand_profile(output_dir: str | Path, profile: dict) -> Path:
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
     target = output_path / "brand-profile.json"
-    target.write_text(json.dumps(profile, indent=2) + "\n")
+    target.write_text(json.dumps(profile, indent=2) + "\n", encoding="utf-8")
     return target
 
 
@@ -108,7 +108,7 @@ def write_campaign_brief(output_dir: str | Path, brief: dict) -> Path:
     lines.extend(["## Platform Matrix", ""])
     for platform, note in brief["platform_matrix"].items():
         lines.append(f"- {platform}: {note}")
-    target.write_text("\n".join(lines).strip() + "\n")
+    target.write_text("\n".join(lines).strip() + "\n", encoding="utf-8")
     return target
 
 
@@ -153,17 +153,17 @@ def generate_asset_prompts(output_dir: str | Path, profile: dict, brief: dict, p
         record = {"name": name, "width": dims[0], "height": dims[1], "prompt": prompt}
         if placeholder:
             asset_path = asset_dir / f"{name}.svg"
-            asset_path.write_text(_placeholder_asset(dims[0], dims[1], profile["brand_name"], name, profile["color_palette"]))
+            asset_path.write_text(_placeholder_asset(dims[0], dims[1], profile["brand_name"], name, profile["color_palette"]), encoding="utf-8")
             record["placeholder_path"] = str(asset_path.name)
         manifest["assets"].append(record)
 
     manifest_path = asset_dir / "asset-manifest.json"
-    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
+    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     prompts_path = asset_dir / "asset-prompts.md"
     prompt_lines = [f"# Asset Prompts for {profile['brand_name']}", ""]
     for record in manifest["assets"]:
         prompt_lines.extend([f"## {record['name']}", "", record["prompt"], ""])
-    prompts_path.write_text("\n".join(prompt_lines).strip() + "\n")
+    prompts_path.write_text("\n".join(prompt_lines).strip() + "\n", encoding="utf-8")
     return {"manifest": manifest_path, "prompts": prompts_path, "asset_dir": asset_dir}
 
 
@@ -175,8 +175,8 @@ def generate_photoshoot_set(output_dir: str | Path, profile: dict, product_name:
     for style in styles:
         prompt = f"Photograph {product_name} in a {style} setup for {profile['brand_name']} using {', '.join(profile['tone_keywords'])} direction."
         file_path = asset_dir / f"photoshoot-{style}.svg"
-        file_path.write_text(_placeholder_asset(1200, 1200, product_name, style, profile["color_palette"]))
+        file_path.write_text(_placeholder_asset(1200, 1200, product_name, style, profile["color_palette"]), encoding="utf-8")
         prompts.append({"style": style, "prompt": prompt, "placeholder_path": file_path.name})
     prompt_path = asset_dir / "photoshoot-prompts.json"
-    prompt_path.write_text(json.dumps({"product_name": product_name, "styles": prompts}, indent=2) + "\n")
+    prompt_path.write_text(json.dumps({"product_name": product_name, "styles": prompts}, indent=2) + "\n", encoding="utf-8")
     return {"manifest": prompt_path, "asset_dir": asset_dir}

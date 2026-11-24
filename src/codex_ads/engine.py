@@ -587,4 +587,4 @@ def write_test_plan(output_dir: str | Path, plan: dict[str, Any]) -> Path:
 def load_json(path: str | Path | None) -> dict[str, Any]:
     if path is None:
         return {}
-    return json.loads(Path(path).read_text())
+    return json.loads(Path(path).read_text(encoding="utf-8"))

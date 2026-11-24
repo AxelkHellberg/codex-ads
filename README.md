@@ -54,6 +54,8 @@ ads photoshoot
 4. Run `codex-ads dna --url https://example.com --html-file sample.html` or let Codex inspect the page directly.
 5. Run `codex-ads create` and `codex-ads generate` to build briefs, asset prompts, and placeholder assets ready for Codex image generation.
 
+The creative workflow reads local HTML, brand profiles, context JSON, and JSON or Markdown briefs as UTF-8. Its generated JSON, Markdown, and SVG files use UTF-8 independently of the system locale.
+
 ## Example inputs
 
 Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:
