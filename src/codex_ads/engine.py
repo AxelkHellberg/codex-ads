@@ -356,10 +356,10 @@ def write_audit_bundle(output_dir: str | Path, summary: dict[str, Any]) -> dict[
     if not summary["quick_wins"]:
         quick_lines.append("- No quick wins available without more platform data.")
 
-    report_path.write_text("\n".join(report_lines).strip() + "\n")
-    action_path.write_text("\n".join(action_lines).strip() + "\n")
-    quick_path.write_text("\n".join(quick_lines).strip() + "\n")
-    json_path.write_text(json.dumps(summary, indent=2) + "\n")
+    report_path.write_text("\n".join(report_lines).strip() + "\n", encoding="utf-8")
+    action_path.write_text("\n".join(action_lines).strip() + "\n", encoding="utf-8")
+    quick_path.write_text("\n".join(quick_lines).strip() + "\n", encoding="utf-8")
+    json_path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     return {
         "report": report_path,
         "action_plan": action_path,
@@ -516,7 +516,7 @@ def write_analysis(output_dir: str | Path, analysis: dict[str, Any]) -> Path:
         lines.append(f"- {key}: `{value}`")
     lines.extend(["", "## Priorities", ""])
     lines.extend(f"- {item}" for item in analysis["priorities"])
-    target.write_text("\n".join(lines).strip() + "\n")
+    target.write_text("\n".join(lines).strip() + "\n", encoding="utf-8")
     return target
 
 
@@ -554,7 +554,7 @@ def write_math_output(output_dir: str | Path, summary: dict[str, Any]) -> Path:
     lines = ["# PPC Math", ""]
     for key, value in summary.items():
         lines.append(f"- {key}: `{value}`")
-    target.write_text("\n".join(lines) + "\n")
+    target.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return target
 
 
@@ -580,11 +580,11 @@ def write_test_plan(output_dir: str | Path, plan: dict[str, Any]) -> Path:
     lines = ["# Paid Media Experiment Plan", ""]
     for key, value in plan.items():
         lines.append(f"- {key}: `{value}`")
-    target.write_text("\n".join(lines) + "\n")
+    target.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return target
 
 
 def load_json(path: str | Path | None) -> dict[str, Any]:
     if path is None:
         return {}
-    return json.loads(Path(path).read_text())
+    return json.loads(Path(path).read_text(encoding="utf-8"))
