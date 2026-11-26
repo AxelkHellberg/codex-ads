@@ -9,7 +9,7 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 
 
 def build_pdf_report(summary_path: str | Path, output_dir: str | Path) -> Path:
-    summary = json.loads(Path(summary_path).read_text())
+    summary = json.loads(Path(summary_path).read_text(encoding="utf-8"))
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
     target = output_path / "ADS-REPORT.pdf"
