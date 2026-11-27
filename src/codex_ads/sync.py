@@ -22,6 +22,7 @@ def _run(cmd: list[str], cwd: str | Path | None = None, capture: bool = True) ->
         check=True,
         text=True,
         capture_output=capture,
+        stdout=None if capture else sys.stderr,
     )
 
 
