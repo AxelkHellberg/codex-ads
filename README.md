@@ -98,6 +98,11 @@ python3 scripts/sync_upstream.py --verify --commit --push
 
 Generated upstream inventories are written under `sync/generated/`.
 
+The `codex-ads sync` command writes its JSON result to stdout. Verification and
+other subprocess diagnostics go to stderr, so `--verify` output can be consumed
+by a JSON parser. Failed verification still exits nonzero without a success
+result or advancing the sync checkpoint.
+
 ## Verification
 
 ```bash
