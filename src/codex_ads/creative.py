@@ -15,6 +15,15 @@ def _fetch_html(url: str) -> str:
 
 
 class _BrandHTMLParser(HTMLParser):
+    # Static HTML boundaries keep block text separate without splitting inline words.
+    _TEXT_BREAK_TAGS = {
+        "address", "article", "aside", "blockquote", "body", "br", "dd", "details",
+        "div", "dl", "dt", "fieldset", "figcaption", "figure", "footer", "form",
+        "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hr", "li", "main",
+        "menu", "nav", "ol", "p", "pre", "section", "summary", "table", "tbody",
+        "td", "tfoot", "th", "thead", "title", "tr", "ul",
+    }
+
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self.title: list[str] | None = None
@@ -31,6 +40,8 @@ class _BrandHTMLParser(HTMLParser):
         if tag in {"script", "style"}:
             self._ignored_tag = tag
             return
+        if tag in self._TEXT_BREAK_TAGS:
+            self.handle_data(" ")
         if tag == "title" and self.title is None:
             self.title = []
             self._in_title = True
@@ -41,14 +52,14 @@ class _BrandHTMLParser(HTMLParser):
             attributes = dict(attrs)
             if (attributes.get("name") or "").strip().casefold() == "description":
                 self.description = attributes.get("content") or ""
-        elif tag == "br":
-            self.handle_data(" ")
 
     def handle_endtag(self, tag: str) -> None:
         if self._ignored_tag:
             if tag == self._ignored_tag:
                 self._ignored_tag = None
             return
+        if tag in self._TEXT_BREAK_TAGS:
+            self.handle_data(" ")
         if tag == "title":
             self._in_title = False
         if tag == self._heading_tag:
@@ -74,7 +85,7 @@ def extract_brand_dna(url: str, html_text: str | None = None) -> dict:
     parsed = _BrandHTMLParser()
     parsed.feed(html)
     parsed.close()
-    text_blob = " ".join(parsed.text)
+    text_blob = "".join(parsed.text)
     words = re.findall(r"[A-Za-z]{4,}", text_blob.lower())
     strong_words = sorted(set(word for word in words if word in {"premium", "trusted", "fast", "growth", "clarity", "performance", "simple", "smart"}))
     host = urlparse(url).netloc or url

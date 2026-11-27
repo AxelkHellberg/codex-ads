@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 import json
+import os
+from pathlib import Path
+import subprocess
+import sys
 
 import pytest
 
@@ -60,3 +64,68 @@ def test_decoded_copy_reaches_profile_and_campaign_brief(tmp_path):
     assert "- Fresh food" in text
     assert "&amp;" not in text
     assert "<em>" not in text
+
+
+@pytest.mark.parametrize("html, expected", [
+    ("<p>pre<strong>mium</strong> service</p>", ["premium"]),
+    ("<p>per<em>for<span>mance</span></em> matters</p>", ["performance"]),
+    ("<p><a href='/'>tru</a>sted service</p>", ["trusted"]),
+    ("<p>pre<!-- annotation -->mium service</p>", ["premium"]),
+    ("<p>pre<script>smart growth</script>mium service</p>", ["premium"]),
+    ("<p>pre<style>.smart { color: red }</style>mium service</p>", ["premium"]),
+    ("<p><span>fast</span>er trusted service</p>", ["trusted"]),
+    ("<p>premium<span>ize</span> trusted service</p>", ["trusted"]),
+    ("<p>smart<span>er</span> <em>performance</em>s trusted service</p>", ["trusted"]),
+])
+def test_tone_keywords_follow_visible_inline_text(html, expected):
+    assert extract_brand_dna("https://brand.test", html)["tone_keywords"] == expected
+
+
+@pytest.mark.parametrize("html", [
+    "<p>fast</p><p>growth</p>",
+    "<div>fast</div><div>growth</div>",
+    "<h1>fast</h1><h2>growth</h2>",
+    "<ul><li>fast</li><li>growth</li></ul>",
+    "<table><tr><td>fast</td><td>growth</td></tr></table>",
+    "<blockquote>fast</blockquote>growth",
+    "<section>fast</section>growth",
+    "fast<br>growth",
+    "fast<br/>growth",
+    "fast<hr>growth",
+    "<title>fast</title>growth",
+    "<span>fast </span><em>growth</em>",
+    "<span>fast</span> <em>growth</em>",
+    "fast&nbsp;growth",
+])
+def test_separate_visible_words_keep_their_boundaries(html):
+    assert extract_brand_dna("https://brand.test", html)["tone_keywords"] == ["fast", "growth"]
+
+
+def test_inline_tone_text_reaches_the_cli_profile_and_campaign(tmp_path):
+    root = Path(__file__).resolve().parents[1]
+    html = tmp_path / "brand.html"
+    html.write_text(
+        "<title>Brand</title><h1>pre<strong>mium</strong> service</h1>"
+        "<p>per<em>formance</em> from a <span>tru</span>sted team</p>",
+        encoding="utf-8",
+    )
+    output = tmp_path / "output"
+    env = {**os.environ, "PYTHONPATH": str(root / "src")}
+    subprocess.run(
+        [sys.executable, "-m", "codex_ads.cli", "dna", "--url", "https://brand.test",
+         "--html-file", str(html), "--output-dir", str(output)],
+        cwd=root, env=env, check=True, capture_output=True, text=True, timeout=30,
+    )
+    profile_path = output / "brand-profile.json"
+    profile = json.loads(profile_path.read_text(encoding="utf-8"))
+    assert profile["tone_keywords"] == ["performance", "premium", "trusted"]
+    assert profile["headline_themes"] == ["premium service"]
+
+    subprocess.run(
+        [sys.executable, "-m", "codex_ads.cli", "create", "--brand-profile", str(profile_path),
+         "--output-dir", str(output)],
+        cwd=root, env=env, check=True, capture_output=True, text=True, timeout=30,
+    )
+    brief = (output / "campaign-brief.md").read_text(encoding="utf-8")
+    assert "- Tone: performance, premium, trusted" in brief
+    assert "Brand delivers performance, premium, trusted outcomes" in brief
