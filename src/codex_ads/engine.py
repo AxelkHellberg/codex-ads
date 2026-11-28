@@ -408,8 +408,17 @@ def _review_metric(metrics: dict[str, Any], name: str, default: float,
     return number
 
 
-def _build_creative_analysis(payload: dict[str, Any]) -> dict[str, Any]:
+def _review_metrics(payload: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(payload, dict):
+        raise ValueError("Review input must be a JSON object")
     metrics = payload.get("metrics", {})
+    if not isinstance(metrics, dict):
+        raise ValueError("metrics must be a JSON object")
+    return metrics
+
+
+def _build_creative_analysis(payload: dict[str, Any]) -> dict[str, Any]:
+    metrics = _review_metrics(payload)
     angles = _review_metric(metrics, "creative_angles", 3, count=True)
     fatigue = _review_metric(metrics, "fatigue_index", 0.4, fraction=True)
     native_fit = _review_metric(metrics, "native_format_coverage", 0.7, fraction=True)
@@ -437,7 +446,7 @@ def _build_creative_analysis(payload: dict[str, Any]) -> dict[str, Any]:
 
 
 def _build_landing_analysis(payload: dict[str, Any]) -> dict[str, Any]:
-    metrics = payload.get("metrics", {})
+    metrics = _review_metrics(payload)
     message_match = _review_metric(metrics, "message_match_score", 0.7, fraction=True)
     lcp = _review_metric(metrics, "mobile_lcp_seconds", 3.5)
     fields = _review_metric(metrics, "form_fields", 6, count=True)

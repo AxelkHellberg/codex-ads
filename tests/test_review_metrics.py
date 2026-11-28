@@ -56,11 +56,13 @@ def test_default_review_scores_remain_compatible(kind, expected):
 
 
 @pytest.mark.parametrize("kind, field", [("creative", "fatigue_index"), ("landing", "message_match_score")])
-def test_invalid_cli_review_does_not_create_report(tmp_path, monkeypatch, kind, field):
+def test_invalid_cli_review_does_not_create_report(tmp_path, monkeypatch, capsys, kind, field):
     source = tmp_path / "input.json"
     source.write_text(json.dumps({"metrics": {field: 2}}))
     output = tmp_path / "output"
     monkeypatch.setattr(sys, "argv", ["codex-ads", kind, "--input", str(source), "--output-dir", str(output)])
-    with pytest.raises(ValueError, match=field):
+    with pytest.raises(SystemExit) as exc:
         main()
+    assert exc.value.code == 2
+    assert field in capsys.readouterr().err
     assert not output.exists()

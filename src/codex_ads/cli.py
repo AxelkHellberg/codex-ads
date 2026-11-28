@@ -82,7 +82,8 @@ def _load_brief(path: str) -> dict:
 
 
 def main() -> None:
-    args = parser().parse_args()
+    command_parser = parser()
+    args = command_parser.parse_args()
 
     if args.command == "audit":
         summary = build_portfolio_audit(load_json(args.input_path))
@@ -107,7 +108,13 @@ def main() -> None:
         payload = load_json(args.input_path)
         if args.command == "plan" and args.business_type:
             payload["business_type"] = args.business_type
-        analysis = build_generic_analysis(args.command, payload)
+        if args.command in {"creative", "landing"}:
+            try:
+                analysis = build_generic_analysis(args.command, payload)
+            except ValueError as exc:
+                command_parser.error(str(exc))
+        else:
+            analysis = build_generic_analysis(args.command, payload)
         print(write_analysis(args.output_dir, analysis))
         return
 
