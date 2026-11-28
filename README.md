@@ -56,6 +56,17 @@ ads photoshoot
 
 ## Example inputs
 
+Creative and landing reviews require finite JSON numbers: ratios such as
+`fatigue_index` and `message_match_score` range from 0 to 1; angle, form-field
+and trust-signal counts are nonnegative integers; `mobile_lcp_seconds` is
+nonnegative. Boolean values and numeric strings are rejected with a field-specific
+error before report output. Missing metrics retain the existing defaults. Valid
+counts and durations saturate their component scores within 0–100.
+The review input and its `metrics` field must be JSON objects. Omitted `metrics`
+and an empty object use the same defaults; null, arrays and scalar values are
+rejected. Invalid review input or metrics exit with a CLI usage error before
+creating or replacing a report.
+
 Sample fixtures for tests live in `tests/fixtures/`. The main audit schema is:
 
 ```json
